@@ -1,4 +1,4 @@
-<categorias>
+<categorias> 
     <categoria>
         <nombre>Acción</nombre>
         <peliculas>
@@ -25,7 +25,6 @@
             </pelicula>
         </peliculas>
     </categoria>
-7
     <categoria>
         <nombre>Comedia</nombre>
         <peliculas>

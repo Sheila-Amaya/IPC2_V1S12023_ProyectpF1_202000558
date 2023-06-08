@@ -19,7 +19,8 @@ class Menu:
         # Imprime las opciones del menú 
         console.print("\t[cyan]1. Iniciar sesión[/cyan]")
         console.print("\t[cyan]2. Registrar usuario[/cyan]")
-        console.print("\t[red]3. Salir[/red]")
+        console.print("\t[cyan]3. Ver listado de películas[/cyan]")
+        console.print("\t[red]4. Salir[/red]")
 
         while True: # Asegura que el menú se muestre repetidamente hasta que el usuario elija la opción de salir
             # Solicita al usuario que seleccione una opción del menú
@@ -54,6 +55,7 @@ class Menu:
 
                     elif subopcion == "3":
                         console.print("\tVolviendo al menú principal...", style="bold yellow")
+                        self.mostrar_menu()
                         break
 
                     else:
@@ -62,9 +64,14 @@ class Menu:
 
             elif opcion == "2":
                 console.print("\tHas seleccionado la opción 2.", style="green")
+                break
                 # Aquí puedes agregar la lógica correspondiente a la opción 2
-
+                
             elif opcion == "3":
+                console.print("\tHas seleccionado la opción 3.", style="green")
+                break
+
+            elif opcion == "4":
                 console.print("\t¡Hasta luego!\n", style="bold red")
                 exit(0)
 
@@ -92,7 +99,10 @@ class Menu:
 
         # Imprime las opciones del menú 
         self.console.print("\t[cyan]1. Ver listado de películas[/cyan]")
-        self.console.print("\t[red]2. Regresar[/red]")
+        self.console.print("\t[cyan]2.Listado de películas favoritas[/cyan]")
+        self.console.print("\t[cyan]3.Comprar boletos[/cyan]")
+        self.console.print("\t[cyan]4.Historial de boletos comprados[/cyan]")
+        self.console.print("\t[red]5. Regresar[/red]")
         
         while True:  # asegura que el menú se muestre repetidamente hasta que el usuario elija la opción de salir
             # Solicita al usuario que seleccione una opción del menú
@@ -100,8 +110,16 @@ class Menu:
 
             if opcion == "1":
                 self.console.print("\tHas seleccionado la opción 1.", style="green")
-                
             elif opcion == "2":
+                self.console.print("\tVolviendo al menú principal...", style="bold yellow")
+                print()
+            elif opcion == "3":
+                self.console.print("\tVolviendo al menú principal...", style="bold yellow")
+                print()
+            elif opcion == "4":
+                self.console.print("\tVolviendo al menú principal...", style="bold yellow")
+                print() 
+            elif opcion == "5":
                 self.console.print("\tVolviendo al menú principal...", style="bold yellow")
                 print()
                 self.mostrar_menu()
