@@ -1,8 +1,17 @@
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
+from Estructuras.EnlazadaSimple import *
+from tkinter import filedialog
+from Lectura import *
+from tkinter import Tk, filedialog
 
+listaUsuario = EnlazadaSimple()
+lector = Lectura()
 class Menu:
+    global listaUsuario
+    global Lectura
+    
     def __init__(self):
         self.console = Console()
 
@@ -49,7 +58,7 @@ class Menu:
                     elif subopcion == "2":
                         console.print("\tHas seleccionado Iniciar sesión como usuario.\n", style="green")
                         # Iniciar sesión como usuario
-                        self.sesionUsuario()
+                        self.sesionCliente()
                         print()
                         break
 
@@ -78,7 +87,7 @@ class Menu:
             else:
                 console.print("\tOpción inválida. Por favor, selecciona una opción válida.", style="bold red")
 
-    def sesionUsuario(self):
+    def sesionCliente(self):
         usuario = self.console.input("\tIngresa tu nombre de usuario: ")
         contrasena = self.console.input("\tIngresa tu contraseña: ")
 
@@ -87,11 +96,11 @@ class Menu:
             print()
             self.console.print("\tIngreso exitoso como usuario.\n", style="green")
             print()
-            self.menuUsuario()# metodo para iniciar sesion como administrador
+            self.menuCliente()# metodo para iniciar sesion como administrador
         else:
             self.console.print("\tCredenciales incorrectas. Vuelve a intentarlo.\n", style="bold red")
 
-    def menuUsuario(self):
+    def menuCliente(self):
         title = Text("\t\t      MENU USUARIO", style="bold")
         # Ajusta el padding izquierdo y derecho del panel
         panel = Panel(title, border_style="bold yellow", width=70, padding=(0, 2, 0, 2))  
@@ -171,19 +180,24 @@ class Menu:
                     subopcion = self.console.input("\n\tSeleccione una opción: ")
 
                     if subopcion == "1":
-                        self.console.print("\tHas seleccionado cargar archivo.", style="green")
+                        self.console.print("\tHas seleccionado cargar archivo.\n", style="green")
+                        self.cargarArchivoUsuario()
 
                     elif subopcion == "2":
-                        self.console.print("\tHas seleccionado crear usuario.", style="green")
+                        self.console.print("\tHas seleccionado crear usuario.\n", style="green")
+                        self.agregarUsuario()
                         
                     elif subopcion == "3":
-                        self.console.print("\tHas seleccionado Modificar usuario.", style="green")
+                        self.console.print("\tHas seleccionado Modificar usuario.\n", style="green")
+                        self.modificarUsuario()
                         
                     elif subopcion == "4":
-                        self.console.print("\tHas seleccionado Eliminar usuarios.", style="green")
+                        self.console.print("\tHas seleccionado Eliminar usuarios.\n", style="green")
+                        self.eliminarUsuario()
                         
                     elif subopcion == "5":
-                        self.console.print("\tHas seleccionado Mostrar usuario.", style="green")
+                        self.console.print("\tHas seleccionado Mostrar usuario.\n", style="green")
+                        self.mostrarUsuario()
 
                     elif subopcion == "6":
                         self.console.print("\tVolviendo al menú principal...", style="bold yellow")
@@ -209,19 +223,19 @@ class Menu:
                     subopcion = self.console.input("\n\tSeleccione una opción: ")
 
                     if subopcion == "1":
-                        self.console.print("\tHas seleccionado cargar archivo.", style="green")
+                        self.console.print("\tHas seleccionado cargar archivo.\n", style="green")
 
                     elif subopcion == "2":
-                        self.console.print("\tHas seleccionado Añadir pelicula.", style="green")
+                        self.console.print("\tHas seleccionado Añadir pelicula.\n", style="green")
                         
                     elif subopcion == "3":
-                        self.console.print("\tHas seleccionado Modificar pelicula.", style="green")
+                        self.console.print("\tHas seleccionado Modificar pelicula.\n", style="green")
                         
                     elif subopcion == "4":
-                        self.console.print("\tHas seleccionado Eliminar pelicula.", style="green")
+                        self.console.print("\tHas seleccionado Eliminar pelicula.\n", style="green")
                         
                     elif subopcion == "5":
-                        self.console.print("\tHas seleccionado Mostrar peliculas", style="green")
+                        self.console.print("\tHas seleccionado Mostrar peliculas.\n", style="green")
 
                     elif subopcion == "6":
                         self.console.print("\tVolviendo al menú principal...", style="bold yellow")
@@ -248,23 +262,23 @@ class Menu:
                     subopcion = self.console.input("\n\tSeleccione una opción: ")
 
                     if subopcion == "1":
-                        self.console.print("\tHas seleccionado cargar archivo.", style="green")
+                        self.console.print("\tHas seleccionado cargar archivo.\n", style="green")
                         print()
 
                     elif subopcion == "2":
-                        self.console.print("\tHas seleccionado Añadir cine.", style="green")
+                        self.console.print("\tHas seleccionado Añadir cine.\n", style="green")
                         print()
                         
                     elif subopcion == "3":
-                        self.console.print("\tHas seleccionado Modificar cine.", style="green")
+                        self.console.print("\tHas seleccionado Modificar cine.\n", style="green")
                         print()
                         
                     elif subopcion == "4":
-                        self.console.print("\tHas seleccionado Eliminar cine.", style="green")
+                        self.console.print("\tHas seleccionado Eliminar cine.\n", style="green")
                         print()
                         
                     elif subopcion == "5":
-                        self.console.print("\tHas seleccionado Mostrar cine", style="green")
+                        self.console.print("\tHas seleccionado Mostrar cine.\n", style="green")
                         print()
 
                     elif subopcion == "6":
@@ -283,3 +297,19 @@ class Menu:
             else:
                 self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
 
+    def cargarArchivoUsuario(self):
+        print("Ingrese la ruta del archivo: \n")
+        ruta = input(' »  ')
+        lector.lecturaU(ruta)
+
+    def agregarUsuario(self):
+        pass
+
+    def modificarUsuario(self):
+        pass
+
+    def eliminarUsuario(self):
+        pass
+
+    def mostrarUsuario(self):
+        pass
