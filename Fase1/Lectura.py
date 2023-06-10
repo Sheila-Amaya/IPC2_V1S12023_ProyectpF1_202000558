@@ -4,7 +4,7 @@ from usuario import *
 
 class Lectura():
     
-    def lecturaU(ruta): #GESTIONAR USUARIOS > LISTA SIMPLE
+    def lecturaU(self,ruta): #GESTIONAR USUARIOS > LISTA SIMPLE
         try:
             tree = ET.parse(ruta)
             root = tree.getroot()
@@ -45,11 +45,12 @@ class Lectura():
             #listaUsuario.eliminarPorBusqueda(correo)
             #listaUsuario.modificarPorCorreo(correo)
             #listaUsuario.recorrer()
+            return listaUsuario
 
         except:
             print(' Error al cargar el archivo...\n')  # Mensaje de error cuando ocurre una excepción al cargar el archivo
 
-    def lecturaCP(ruta): #CATEGORIA Y PELICULAS > DOBLE ENLAZADA CIRCULAR
+    def lecturaCP(self, ruta): #CATEGORIA Y PELICULAS > DOBLE ENLAZADA CIRCULAR
         try:
             tree = ET.parse(ruta)  # Parsea el archivo XML y crea un objeto de árbol
             root = tree.getroot()  # Obtiene la etiqueta raíz del árbol
@@ -94,7 +95,7 @@ class Lectura():
         except:
             print(' Error al cargar el archivo...\n')  # Mensaje de error cuando ocurre una excepción al cargar el archivo
 
-    def lecturaS(ruta ): #SALAS > DOBLEMENTE ENLAZADA
+    def lecturaS(self,ruta): #SALAS > DOBLEMENTE ENLAZADA
         try:
             tree = ET.parse(ruta)
             root = tree.getroot()

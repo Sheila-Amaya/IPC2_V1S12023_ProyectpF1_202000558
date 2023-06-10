@@ -2,21 +2,27 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 from Estructuras.EnlazadaSimple import *
-from tkinter import filedialog
 from Lectura import *
-from tkinter import Tk, filedialog
+from usuario import *
 
-listaUsuario = EnlazadaSimple()
 lector = Lectura()
 class Menu:
-    global listaUsuario
-    global Lectura
+    listaUsuario = EnlazadaSimple()
     
     def __init__(self):
         self.console = Console()
 
     def mostrar_menu(self):
         console = Console()
+        
+        #se crea el administrador por defecto al iniciar el programa
+        rol = "administrador"
+        nombre = "admi"
+        apellido = "administrador por defecto"
+        telefono = "3834657892"
+        correo = " admi@gmail.com"
+        contrasena = "123"
+        self.listaUsuario.agregarUltimo(Usuario(rol,nombre,apellido,telefono,correo,contrasena))
 
         # Imprime el título del panel 
         print()
@@ -36,8 +42,7 @@ class Menu:
             opcion = console.input("\n\tSeleccione una opción: ")
 
             if opcion == "1":
-                console.print("\tHas seleccionado la opción 1.", style="green")
-                print()
+                console.print("\tHas seleccionado la opción 1.\n", style="green")
 
                 while True:
                     title = Text("\t\t        INICIAR SESION", style="bold")
@@ -88,20 +93,22 @@ class Menu:
                 console.print("\tOpción inválida. Por favor, selecciona una opción válida.", style="bold red")
 
     def sesionCliente(self):
-        usuario = self.console.input("\tIngresa tu nombre de usuario: ")
+        nombre_usuario = self.console.input("\tIngresa tu nombre de usuario: ")
         contrasena = self.console.input("\tIngresa tu contraseña: ")
 
-        # verifica las credenciales del administrador
-        if usuario == "a" and contrasena == "a":
-            print()
-            self.console.print("\tIngreso exitoso como usuario.\n", style="green")
-            print()
-            self.menuCliente()# metodo para iniciar sesion como administrador
-        else:
-            self.console.print("\tCredenciales incorrectas. Vuelve a intentarlo.\n", style="bold red")
+        temp = self.listaUsuario.primero
+        while temp:
+            if temp.dato.rol == "cliente" and temp.dato.nombre == nombre_usuario and temp.dato.contrasena == contrasena:
+                self.console.print("\n\tIngreso exitoso como administrador.\n", style="green")
+                self.menuCliente()  # Método para iniciar sesión como administrador
+                print()
+                return
+            temp = temp.siguiente
+
+        self.console.print("\tCredenciales incorrectas. Vuelve a intentarlo.\n", style="bold red")
 
     def menuCliente(self):
-        title = Text("\t\t      MENU USUARIO", style="bold")
+        title = Text("\t\t       MENU USUARIO", style="bold")
         # Ajusta el padding izquierdo y derecho del panel
         panel = Panel(title, border_style="bold yellow", width=70, padding=(0, 2, 0, 2))  
         self.console.print(panel)
@@ -134,17 +141,20 @@ class Menu:
                 self.mostrar_menu()
 
     def sesionAdmi(self):
-        usuario = self.console.input("\tIngresa tu nombre de usuario: ")
+        nombre_usuario = self.console.input("\tIngresa tu nombre de usuario: ")
         contrasena = self.console.input("\tIngresa tu contraseña: ")
 
-        # verifica las credenciales del administrador
-        if usuario == "admi" and contrasena == "admi":
-            print()
-            self.console.print("\tIngreso exitoso como administrador.\n", style="green")
-            print()
-            self.menuAdmi()# metodo para iniciar sesion como administrador
-        else:
-            self.console.print("\tCredenciales incorrectas. Vuelve a intentarlo.\n", style="bold red")
+        temp = self.listaUsuario.primero
+        while temp:
+            if temp.dato.rol == "administrador" and temp.dato.nombre == nombre_usuario and temp.dato.contrasena == contrasena:
+                print()
+                self.console.print("\tIngreso exitoso como administrador.\n", style="green")
+                print()
+                self.menuAdmi()  # Método para iniciar sesión como administrador
+                return
+            temp = temp.siguiente
+
+        self.console.print("\tCredenciales incorrectas. Vuelve a intentarlo.\n", style="bold red")
 
     def menuAdmi(self):
         # Imprime el título del panel 
@@ -157,17 +167,35 @@ class Menu:
         self.console.print("\t[cyan]1. Gestionar Usuarios[/cyan]")
         self.console.print("\t[cyan]2. Gestionar Categorías y películas[/cyan]")
         self.console.print("\t[cyan]3. Gestionar Salas[/cyan]")
-        self.console.print("\t[red]4. Salir[/red]")
+        self.console.print("\t[red]4. Regresar[/red]")
         
         while True:  # asegura que el menú se muestre repetidamente hasta que el usuario elija la opción de salir
             # Solicita al usuario que seleccione una opción del menú
             opcion = self.console.input("\n\tSeleccione una opción: ")
 
-            if opcion == "1":
-                self.console.print("\tHas seleccionado la opción 1.", style="green")
+            if opcion == "1": #GESTION USUARIOS
+                self.console.print("\tHas seleccionado la opción 1.\n", style="green")
+                self.gestionUsuarios()
+                
+            elif opcion == "2":#GESTION DE CATEGORIAS Y PELICULAS
+                self.console.print("\tHas seleccionado la opción 2.\n", style="green")
+                self.gestionarCategorias()
+
+            elif opcion == "3": #GESTIONAR SALAS
+                self.console.print("\tHas seleccionado la opción 3.\n", style="green")
+                self.gestionarSalas()
+
+            elif opcion == "4": #SALIR PARA EL MENU DEL ADMINISTRADOR
+                self.console.print("\tVolviendo al menú principal...", style="bold yellow")
                 print()
-                while True:
-                    title = Text("\t\t         GESTIONAR USUARIOS", style="bold")
+                self.mostrar_menu()
+
+            else:
+                self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
+
+    def gestionUsuarios(self):
+        while True:
+                    title = Text("\t\t       GESTIONAR USUARIOS", style="bold")
                     panel = Panel(title, border_style="bold magenta", width=70, padding=(0, 2, 0, 2))  
                     self.console.print(panel)
                     self.console.print("\t[cyan]1. Cargar Archivo [/cyan]")
@@ -198,7 +226,7 @@ class Menu:
                     elif subopcion == "5":
                         self.console.print("\tHas seleccionado Mostrar usuario.\n", style="green")
                         self.mostrarUsuario()
-
+                    
                     elif subopcion == "6":
                         self.console.print("\tVolviendo al menú principal...", style="bold yellow")
                         print()
@@ -207,9 +235,68 @@ class Menu:
                     else:
                         self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
 
-            elif opcion == "2":#GESTION DE CATEGORIAS Y PELICULAS
-                self.console.print("\tHas seleccionado la opción 2.\n", style="green")
-                while True:
+    def cargarArchivoUsuario(self):
+        console = Console()
+        while True:
+            console.print("\tIngrese la ruta del archivo: ", style="bold yellow")
+            ruta = input('\t »  ')
+            
+            datosArchivo = lector.lecturaU(ruta)
+            
+            if self.listaUsuario.estaVacia():
+                # Si la lista está vacía, simplemente asignar los datos del archivo a la lista
+                self.listaUsuario = datosArchivo
+            else:
+                # Si la lista no está vacía, agregar los datos del archivo al final de la lista existente
+                ultimoNodo = self.listaUsuario.ultimo
+                ultimoNodo.siguiente = datosArchivo.primero
+                self.listaUsuario.ultimo = datosArchivo.ultimo
+            
+            console.print("\t[green]Archivo cargado exitosamente.[/green]")
+
+            opcion = input("\n\tDesea agregar otro archivo? (s/n): ")
+            if opcion.lower() != "s\n":
+                break
+        self.gestionUsuarios()
+
+
+    def agregarUsuario(self):
+        self.console.print("[cyan]\tIngrese los datos del usuario: [/cyan]")
+
+        rol = input("\tRol: ")
+        nombre = input("\tNombre: ")
+        apellido = input("\tApellido: ")
+        telefono = input("\tTeléfono: ")
+        correo = input("\tCorreo: ")
+        contrasena = input("\tContraseña: ")
+
+        # Validar si el correo ya existe en la lista
+        if self.listaUsuario.buscarPorCorreo(correo) is not None:
+            self.console.print("[red]\tYa existe un usuario con el correo ingresado.[/red]\n")
+        else:
+            self.listaUsuario.agregarUltimo(Usuario(rol, nombre, apellido, telefono, correo, contrasena))
+            self.console.print("[green]\tUsuario agregado con éxito.[/green]\n")
+        self.gestionUsuarios()
+
+    def modificarUsuario(self):
+        self.console.print("[cyan]\tIngrese el correo del usuario el cual desea modificar: [/cyan]")
+        correo = input("\tCorreo: ")
+        self.listaUsuario.modificarPorCorreo(correo)
+
+    def eliminarUsuario(self):
+        self.console.print("[cyan]\tIngrese el correo del usuario el cual desea eliminar: [/cyan]")
+        correo = input("\tCorreo: ")
+        self.listaUsuario.eliminarPorCorreo(correo)
+
+    def mostrarUsuario(self):
+        if self.listaUsuario is not None:
+            self.listaUsuario.recorrer()
+        else:
+            print("No se encontraron datos disponibles.")
+
+
+    def gestionarCategorias(self):
+        while True:
                     title = Text("\t\t   GESTIONAR CATEGORIAS Y PELICULAS", style="bold")
                     panel = Panel(title, border_style="bold magenta", width=70, padding=(0, 2, 0, 2))  
                     self.console.print(panel)
@@ -238,17 +325,14 @@ class Menu:
                         self.console.print("\tHas seleccionado Mostrar peliculas.\n", style="green")
 
                     elif subopcion == "6":
-                        self.console.print("\tVolviendo al menú principal...", style="bold yellow")
-                        print()
+                        self.console.print("\tVolviendo al menú principal...\n", style="bold yellow")
                         self.menuAdmi()
 
                     else:
                         self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
-
-            elif opcion == "3": #GESTIONAR SALAS
-                self.console.print("\tHas seleccionado la opción 3.", style="green")
-                print()
-                while True:
+    
+    def gestionarSalas(self):
+        while True:
                     title = Text("\t\t        GESTIONAR SALAS", style="bold")
                     panel = Panel(title, border_style="bold magenta", width=70, padding=(0, 2, 0, 2))  
                     self.console.print(panel)
@@ -288,28 +372,3 @@ class Menu:
 
                     else:
                         self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
-
-            elif opcion == "4": #SALIR PARA EL MENU DEL ADMINISTRADOR
-                self.console.print("\tVolviendo al menú principal...", style="bold yellow")
-                print()
-                self.mostrar_menu()
-
-            else:
-                self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
-
-    def cargarArchivoUsuario(self):
-        print("Ingrese la ruta del archivo: \n")
-        ruta = input(' »  ')
-        lector.lecturaU(ruta)
-
-    def agregarUsuario(self):
-        pass
-
-    def modificarUsuario(self):
-        pass
-
-    def eliminarUsuario(self):
-        pass
-
-    def mostrarUsuario(self):
-        pass
