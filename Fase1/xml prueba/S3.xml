@@ -16,4 +16,21 @@
             </sala>
         </salas>
     </cine>
+    <cine>
+        <nombre>Cinepolis</nombre>
+        <salas>
+            <sala>
+                <numero>#USACIPC2_202212333_8</numero>
+                <asientos>10</asientos>
+            </sala>
+            <sala>
+                <numero>#USACIPC2_202212333_9</numero>
+                <asientos>40</asientos>
+            </sala>
+            <sala>
+                <numero>#USACIPC2_202212333_10</numero>
+                <asientos>110</asientos>
+            </sala>
+        </salas>
+    </cine>
 </cines>

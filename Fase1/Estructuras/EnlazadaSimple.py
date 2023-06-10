@@ -1,7 +1,5 @@
 from Estructuras.NodoS import *
 from rich.console import Console
-from rich.panel import Panel
-from rich.text import Text
 
 class EnlazadaSimple():
     
@@ -104,3 +102,10 @@ class EnlazadaSimple():
             temp = temp.siguiente
         
         print("No se encontró ninguna información correspondiente al correo {} en el sistema.".format(correo))
+        
+    def recorrerSalas(self): #Lista almacenada dentro de una LD
+        temp = self.primero
+        while temp != None:
+            print("\n\t\tNumero: "+temp.dato.num)
+            print("\t\tAsientos: "+temp.dato.asientos+"\n")
+            temp = temp.siguiente

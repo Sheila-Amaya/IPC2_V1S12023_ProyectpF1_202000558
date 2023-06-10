@@ -1,8 +1,11 @@
 import xml.etree.ElementTree as ET
 from Estructuras.EnlazadaSimple import *
 from usuario import *
+from Estructuras.DobleEnlazada import *
+from cine import *
+from sala import *
 
-class Lectura():
+class Lectura:
     
     def lecturaU(self,ruta): #GESTIONAR USUARIOS > LISTA SIMPLE
         try:
@@ -50,11 +53,46 @@ class Lectura():
         except:
             print(' Error al cargar el archivo...\n')  # Mensaje de error cuando ocurre una excepción al cargar el archivo
 
+    def lecturaS(self, ruta): #SALAS > DOBLEMENTE ENLAZADA
+        try:
+            tree = ET.parse(ruta)
+            root = tree.getroot()
+
+            listaCine = ListaDobleEnlazada()
+
+            for elemento in root: #raiz = cines
+                #CINE
+                nombre = ""
+                #SALAS
+                salas = EnlazadaSimple()
+
+                if elemento.tag == "cine":
+                    for subelemento in elemento: # etiquetas dentro de cine, nombre, salas
+                        if subelemento.tag == "nombre":
+                            nombre = subelemento.text
+                        if subelemento.tag == "salas":
+                            for sub in subelemento:
+                                if sub.tag == "sala": 
+                                    numero = ""
+                                    asientos = ""
+                                    for s in sub:
+                                        if s.tag == "numero":
+                                            numero = s.text
+                                        if s.tag == "asientos":
+                                            asientos = s.text
+                                    salas.agregarUltimo(Sala(numero, asientos))
+                    listaCine.agregarUltimo(Cine(nombre, salas))
+
+            #listaCine.recorrerInicio()
+
+            return listaCine, salas
+        except:
+            print('Error al cargar el archivo...\n')  # Mensaje de error cuando ocurre una excepción al cargar el archivo
+
     def lecturaCP(self, ruta): #CATEGORIA Y PELICULAS > DOBLE ENLAZADA CIRCULAR
         try:
             tree = ET.parse(ruta)  # Parsea el archivo XML y crea un objeto de árbol
             root = tree.getroot()  # Obtiene la etiqueta raíz del árbol
-            
             
             # Itera sobre los elementos hijos de la raíz (raiz=categorias)
             for elemento in root:
@@ -95,38 +133,12 @@ class Lectura():
         except:
             print(' Error al cargar el archivo...\n')  # Mensaje de error cuando ocurre una excepción al cargar el archivo
 
-    def lecturaS(self,ruta): #SALAS > DOBLEMENTE ENLAZADA
-        try:
-            tree = ET.parse(ruta)
-            root = tree.getroot()
-            
-            for elemento in root: #raiz = cines
-                
-                #CINE
-                nombre = ""
-                #SALAS
-                numero = ""
-                asientos = 0
-                
-                if elemento.tag == "cine":
-                    for subelemento in elemento: # etiquetas dentro de cine, nombre ,salas
-                        if subelemento.tag == "nombre":
-                            nombre = subelemento.text
-                            #print("\n"+subelemento.text)
-                        if subelemento.tag == "salas":
-                            for sub in subelemento:
-                                if sub.tag == "sala": 
-                                    for s in sub:
-                                        if s.tag == "numero":
-                                            numero = s.text
-                                        if s.tag == "asientos":
-                                            asientos = int(s.text)
-            
-        except:
-            print(' Error al cargar el archivo...\n')  # Mensaje de error cuando ocurre una excepción al cargar el archivo
-
 
     # Llama a la función con la ruta del archivo XML
     #lecturaCP("C:\\Users\\amaya\\OneDrive\\Documents\\GitHub\\IPC2_V1S12023_ProyectpF1_202000558\\Fase1\\xml prueba\\C1.xml")
     #lecturaU("C:\\Users\\amaya\\OneDrive\\Documents\\GitHub\\IPC2_V1S12023_ProyectpF1_202000558\\Fase1\\xml prueba\\U2.xml")
     #lecturaS("C:\\Users\\amaya\\OneDrive\\Documents\\GitHub\\IPC2_V1S12023_ProyectpF1_202000558\\Fase1\\xml prueba\\S3.xml")
+
+#ruta = r"C:\Users\amaya\OneDrive\Documents\GitHub\IPC2_V1S12023_ProyectpF1_202000558\Fase1\xml prueba\S3.xml"
+#lector = Lectura()
+#listaUsuarios = lector.lecturaS(ruta)

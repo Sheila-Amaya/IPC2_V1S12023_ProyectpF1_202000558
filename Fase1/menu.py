@@ -5,9 +5,11 @@ from Estructuras.EnlazadaSimple import *
 from Lectura import *
 from usuario import *
 
-lector = Lectura()
+lector = Lectura() #variable global
 class Menu:
     listaUsuario = EnlazadaSimple()
+    listaCine = ListaDobleEnlazada()
+    listaSala = EnlazadaSimple()
     
     def __init__(self):
         self.console = Console()
@@ -402,7 +404,7 @@ class Menu:
                         
                     elif subopcion == "5":
                         self.console.print("\tHas seleccionado Mostrar cine.\n", style="green")
-                        self.modificarSala()
+                        self.mostrarSala()
 
                     elif subopcion == "6":
                         self.console.print("\tVolviendo al menú principal...", style="bold yellow")
@@ -411,9 +413,27 @@ class Menu:
 
                     else:
                         self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
-                        
+    
     def cargarArhivosSala(self):
-        pass
+        console = Console()
+        lector = Lectura()  # Crear una instancia de la clase Lectura
+        while True:
+            console.print("\tIngrese la ruta del archivo: ", style="bold yellow")
+            ruta = input('\t »  ')
+            
+            resultado = lector.lecturaS(ruta)  # Obtener el resultado de la función lecturaS
+
+            if resultado is not None:
+                self.listaCine, self.listaSala = resultado  # Desempaquetar los resultados en las variables
+                console.print("\t[green]Archivo cargado exitosamente.[/green]")
+            else:
+                console.print("\t[red]Error al cargar el archivo.[/red]")
+            
+            opcion = input("\n\tDesea agregar otro archivo? (s/n): ")
+            if opcion.lower() != "s\n":
+                break
+        self.gestionarSalas()
+
     def agregarSala(self):
         pass
     def modificarSala(self):
@@ -422,5 +442,9 @@ class Menu:
         pass
     def eliminarSala(self):
         pass
+
     def mostrarSala(self):
-        pass
+        if self.listaCine is not None:
+            self.listaCine.recorrerInicio()
+        else:
+            print("No se encontraron datos disponibles.")
