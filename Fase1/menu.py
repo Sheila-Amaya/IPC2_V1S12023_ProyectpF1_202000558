@@ -11,10 +11,9 @@ class Menu:
     
     def __init__(self):
         self.console = Console()
-
-    def mostrar_menu(self):
-        console = Console()
-        
+        self.admiPorDefecto() #para que se inicialice al ejecutar el programa
+    
+    def admiPorDefecto(self):
         #se crea el administrador por defecto al iniciar el programa
         rol = "administrador"
         nombre = "admi"
@@ -23,6 +22,9 @@ class Menu:
         correo = " admi@gmail.com"
         contrasena = "123"
         self.listaUsuario.agregarUltimo(Usuario(rol,nombre,apellido,telefono,correo,contrasena))
+
+    def mostrar_menu(self):
+        console = Console()
 
         # Imprime el título del panel 
         print()
@@ -75,14 +77,14 @@ class Menu:
                     else:
                         console.print("\tOpción inválida. Por favor, selecciona una opción válida.", style="bold red")
 
-
-            elif opcion == "2":
+            elif opcion == "2": #REGISTRAR USUARIO
                 console.print("\tHas seleccionado la opción 2.", style="green")
+                self.registrarUsuario()
                 break
-                # Aquí puedes agregar la lógica correspondiente a la opción 2
                 
-            elif opcion == "3":
+            elif opcion == "3": #VER PELICULAS
                 console.print("\tHas seleccionado la opción 3.", style="green")
+                self.verPeliculas()
                 break
 
             elif opcion == "4":
@@ -92,6 +94,9 @@ class Menu:
             else:
                 console.print("\tOpción inválida. Por favor, selecciona una opción válida.", style="bold red")
 
+    def verPeliculas():
+        pass
+
     def sesionCliente(self):
         nombre_usuario = self.console.input("\tIngresa tu nombre de usuario: ")
         contrasena = self.console.input("\tIngresa tu contraseña: ")
@@ -99,7 +104,7 @@ class Menu:
         temp = self.listaUsuario.primero
         while temp:
             if temp.dato.rol == "cliente" and temp.dato.nombre == nombre_usuario and temp.dato.contrasena == contrasena:
-                self.console.print("\n\tIngreso exitoso como administrador.\n", style="green")
+                self.console.print("\n\tIngreso exitoso como cliente.\n", style="green")
                 self.menuCliente()  # Método para iniciar sesión como administrador
                 print()
                 return
@@ -193,6 +198,24 @@ class Menu:
             else:
                 self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
 
+    def registrarUsuario(self): #Clientes unicamente
+        self.console.print("[cyan]\n\tIngrese los datos para el usuario nuevo: \n[/cyan]")
+
+        rol = "cliente"
+        nombre = input("\tNombre: ")
+        apellido = input("\tApellido: ")
+        telefono = input("\tTeléfono: ")
+        correo = input("\tCorreo: ")
+        contrasena = input("\tContraseña: ")
+
+        # Validar si el correo ya existe en la lista
+        if self.listaUsuario.buscarPorCorreo(correo) is not None:
+            self.console.print("[red]\n\tYa existe un usuario con el correo ingresado.[/red]\n")
+        else:
+            self.listaUsuario.agregarUltimo(Usuario(rol, nombre, apellido, telefono, correo, contrasena))
+            self.console.print("[green]\n\tUsuario agregado con éxito.[/green]\n")
+        self.mostrar_menu()
+
     def gestionUsuarios(self):
         while True:
                     title = Text("\t\t       GESTIONAR USUARIOS", style="bold")
@@ -259,7 +282,6 @@ class Menu:
                 break
         self.gestionUsuarios()
 
-
     def agregarUsuario(self):
         self.console.print("[cyan]\tIngrese los datos del usuario: [/cyan]")
 
@@ -272,10 +294,10 @@ class Menu:
 
         # Validar si el correo ya existe en la lista
         if self.listaUsuario.buscarPorCorreo(correo) is not None:
-            self.console.print("[red]\tYa existe un usuario con el correo ingresado.[/red]\n")
+            self.console.print("[red]\n\tYa existe un usuario con el correo ingresado.[/red]\n")
         else:
             self.listaUsuario.agregarUltimo(Usuario(rol, nombre, apellido, telefono, correo, contrasena))
-            self.console.print("[green]\tUsuario agregado con éxito.[/green]\n")
+            self.console.print("[green]\n\tUsuario agregado con éxito.[/green]\n")
         self.gestionUsuarios()
 
     def modificarUsuario(self):
@@ -294,7 +316,6 @@ class Menu:
         else:
             print("No se encontraron datos disponibles.")
 
-
     def gestionarCategorias(self):
         while True:
                     title = Text("\t\t   GESTIONAR CATEGORIAS Y PELICULAS", style="bold")
@@ -311,18 +332,23 @@ class Menu:
 
                     if subopcion == "1":
                         self.console.print("\tHas seleccionado cargar archivo.\n", style="green")
+                        self.cargarArhivosCategorias()
 
                     elif subopcion == "2":
                         self.console.print("\tHas seleccionado Añadir pelicula.\n", style="green")
+                        self.agregarCategoria()
                         
                     elif subopcion == "3":
                         self.console.print("\tHas seleccionado Modificar pelicula.\n", style="green")
+                        self.modificarCategoria()
                         
                     elif subopcion == "4":
                         self.console.print("\tHas seleccionado Eliminar pelicula.\n", style="green")
+                        self.eliminarCategoria()
                         
                     elif subopcion == "5":
                         self.console.print("\tHas seleccionado Mostrar peliculas.\n", style="green")
+                        self.modificarCategoria()
 
                     elif subopcion == "6":
                         self.console.print("\tVolviendo al menú principal...\n", style="bold yellow")
@@ -330,6 +356,19 @@ class Menu:
 
                     else:
                         self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
+    
+    def cargarArhivosCategorias(self):
+        pass
+    def agregarCategoria(self):
+        pass
+    def modificarCategoria(self):
+        pass
+    def modificarCategoria(self):
+        pass
+    def eliminarCategoria(self):
+        pass
+    def mostrarCategoria(self):
+        pass
     
     def gestionarSalas(self):
         while True:
@@ -347,23 +386,23 @@ class Menu:
 
                     if subopcion == "1":
                         self.console.print("\tHas seleccionado cargar archivo.\n", style="green")
-                        print()
+                        self.cargarArhivosSala()
 
                     elif subopcion == "2":
                         self.console.print("\tHas seleccionado Añadir cine.\n", style="green")
-                        print()
+                        self.agregarSala()
                         
                     elif subopcion == "3":
                         self.console.print("\tHas seleccionado Modificar cine.\n", style="green")
-                        print()
+                        self.modificarSala()
                         
                     elif subopcion == "4":
                         self.console.print("\tHas seleccionado Eliminar cine.\n", style="green")
-                        print()
+                        self.eliminarSala()
                         
                     elif subopcion == "5":
                         self.console.print("\tHas seleccionado Mostrar cine.\n", style="green")
-                        print()
+                        self.modificarSala()
 
                     elif subopcion == "6":
                         self.console.print("\tVolviendo al menú principal...", style="bold yellow")
@@ -372,3 +411,16 @@ class Menu:
 
                     else:
                         self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
+                        
+    def cargarArhivosSala(self):
+        pass
+    def agregarSala(self):
+        pass
+    def modificarSala(self):
+        pass
+    def modificarSala(self):
+        pass
+    def eliminarSala(self):
+        pass
+    def mostrarSala(self):
+        pass
