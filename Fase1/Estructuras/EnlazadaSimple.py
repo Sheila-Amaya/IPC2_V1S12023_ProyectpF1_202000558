@@ -81,7 +81,6 @@ class EnlazadaSimple():
         console.print("[/red]El correo {} no ha sido encontrado.[/red]".format(correo))
         return False
 
-
     def eliminarPorCorreo(self, correo):
         temp = self.primero
         previo = None
@@ -109,3 +108,30 @@ class EnlazadaSimple():
             print("\n\t\tNumero: "+temp.dato.num)
             print("\t\tAsientos: "+temp.dato.asientos+"\n")
             temp = temp.siguiente
+            
+    def modificarSalas(self):
+        opcion = 's'
+        while opcion.lower() == 's':
+            nombre_sala = input("\n\tIngrese el numero de la sala a modificar: ")
+            temp = self.primero
+            while temp is not None:
+                if temp.dato.num == nombre_sala:
+                    print("\n\tDatos actuales de la sala:")
+                    print("\tNúmero: " + temp.dato.num)
+                    print("\tAsientos: " + temp.dato.asientos+"\n")
+
+                    print("\n\tIngrese los nuevos datos de la sala:")
+                    nuevo_numero = input("\tNuevo número: ")
+                    nuevo_asientos = input("\tNuevo número de asientos: ")
+
+                    temp.dato.num = nuevo_numero
+                    temp.dato.asientos = nuevo_asientos
+
+                    break
+
+                temp = temp.siguiente
+
+            if temp is None:
+                print("\tNo se encontró la sala en la lista")
+
+            opcion = input("\t¿Desea modificar otra sala? (s/n): ")

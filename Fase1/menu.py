@@ -4,6 +4,9 @@ from rich.text import Text
 from Estructuras.EnlazadaSimple import *
 from Lectura import *
 from usuario import *
+from Estructuras.DobleEnlazada import *
+from cine import *
+from sala import *
 
 lector = Lectura() #variable global
 class Menu:
@@ -174,7 +177,8 @@ class Menu:
         self.console.print("\t[cyan]1. Gestionar Usuarios[/cyan]")
         self.console.print("\t[cyan]2. Gestionar Categorías y películas[/cyan]")
         self.console.print("\t[cyan]3. Gestionar Salas[/cyan]")
-        self.console.print("\t[red]4. Regresar[/red]")
+        self.console.print("\t[cyan]4. Gestionar boletos comprados[/cyan]")
+        self.console.print("\t[red]5. Regresar[/red]")
         
         while True:  # asegura que el menú se muestre repetidamente hasta que el usuario elija la opción de salir
             # Solicita al usuario que seleccione una opción del menú
@@ -191,8 +195,12 @@ class Menu:
             elif opcion == "3": #GESTIONAR SALAS
                 self.console.print("\tHas seleccionado la opción 3.\n", style="green")
                 self.gestionarSalas()
+                
+            elif opcion == "4": #GESTIONAR BOLETOS
+                self.console.print("\tHas seleccionado la opción 4.\n", style="green")
+                self.gestionarBoletos()
 
-            elif opcion == "4": #SALIR PARA EL MENU DEL ADMINISTRADOR
+            elif opcion == "": #SALIR PARA EL MENU DEL ADMINISTRADOR
                 self.console.print("\tVolviendo al menú principal...", style="bold yellow")
                 print()
                 self.mostrar_menu()
@@ -316,62 +324,8 @@ class Menu:
         if self.listaUsuario is not None:
             self.listaUsuario.recorrer()
         else:
-            print("No se encontraron datos disponibles.")
+            print("\tNo se encontraron datos disponibles.\n")
 
-    def gestionarCategorias(self):
-        while True:
-                    title = Text("\t\t   GESTIONAR CATEGORIAS Y PELICULAS", style="bold")
-                    panel = Panel(title, border_style="bold magenta", width=70, padding=(0, 2, 0, 2))  
-                    self.console.print(panel)
-                    self.console.print("\t[cyan]1. Cargar Archivo [/cyan]")
-                    self.console.print("\t[cyan]2. Añadir pelicula[/cyan]")
-                    self.console.print("\t[cyan]3. Modificar pelicula[/cyan]")
-                    self.console.print("\t[cyan]4. Eliminar pelicula[/cyan]")
-                    self.console.print("\t[cyan]5. Mostrar peliculas[/cyan]")
-                    self.console.print("\t[red]6. Volver al menú principal[/red]")
-                        
-                    subopcion = self.console.input("\n\tSeleccione una opción: ")
-
-                    if subopcion == "1":
-                        self.console.print("\tHas seleccionado cargar archivo.\n", style="green")
-                        self.cargarArhivosCategorias()
-
-                    elif subopcion == "2":
-                        self.console.print("\tHas seleccionado Añadir pelicula.\n", style="green")
-                        self.agregarCategoria()
-                        
-                    elif subopcion == "3":
-                        self.console.print("\tHas seleccionado Modificar pelicula.\n", style="green")
-                        self.modificarCategoria()
-                        
-                    elif subopcion == "4":
-                        self.console.print("\tHas seleccionado Eliminar pelicula.\n", style="green")
-                        self.eliminarCategoria()
-                        
-                    elif subopcion == "5":
-                        self.console.print("\tHas seleccionado Mostrar peliculas.\n", style="green")
-                        self.modificarCategoria()
-
-                    elif subopcion == "6":
-                        self.console.print("\tVolviendo al menú principal...\n", style="bold yellow")
-                        self.menuAdmi()
-
-                    else:
-                        self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
-    
-    def cargarArhivosCategorias(self):
-        pass
-    def agregarCategoria(self):
-        pass
-    def modificarCategoria(self):
-        pass
-    def modificarCategoria(self):
-        pass
-    def eliminarCategoria(self):
-        pass
-    def mostrarCategoria(self):
-        pass
-    
     def gestionarSalas(self):
         while True:
                     title = Text("\t\t        GESTIONAR SALAS", style="bold")
@@ -413,7 +367,7 @@ class Menu:
 
                     else:
                         self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
-    
+
     def cargarArhivosSala(self):
         console = Console()
         lector = Lectura()  # Crear una instancia de la clase Lectura
@@ -435,16 +389,121 @@ class Menu:
         self.gestionarSalas()
 
     def agregarSala(self):
-        pass
+        self.console.print("[cyan]\n\tIngrese los datos para el cine nuevo: \n[/cyan]")
+
+        nombre = input("\tNombre del cine: ")
+
+        # Buscar el cine por nombre en la lista
+        cine = self.listaCine.buscarCine(nombre)
+
+        if cine is not None:
+            opcion = input("\n\tEl cine ya existe. ¿Desea agregar más salas al cine? (s/n): ")
+            if opcion.lower() == "s":
+                while True:
+                    numero = input("\tNúmero de sala: ")
+                    asientos = input("\tCantidad de asientos: ")
+
+                    sala = Sala(numero, asientos)
+
+                    cine.sala.agregarUltimo(sala)
+
+                    opcion = input("\n\t¿Desea agregar otra sala al cine? (s/n): ")
+                    print()
+                    if opcion.lower() != "s":
+                        break
+                self.console.print("[green]\n\tSalas agregadas con éxito al cine existente.[/green]\n")
+            else:
+                self.console.print("[yellow]\n\tNo se agregaron nuevas salas al cine existente.[/yellow]\n")
+        else:
+            # El cine no existe, se agrega uno nuevo con su lista de salas
+            salas = EnlazadaSimple()
+            while True:
+                numero = input("\tNúmero de sala: ")
+                asientos = input("\tCantidad de asientos: ")
+
+                sala = Sala(numero, asientos)
+
+                salas.agregarUltimo(sala)
+
+                opcion = input("\n\t¿Desea agregar otra sala al cine? (s/n): ")
+                if opcion.lower() != "s":
+                    break
+            self.listaCine.agregarUltimo(Cine(nombre, salas))
+            self.console.print("[green]\n\tCine y salas agregados con éxito.[/green]\n")
+
+        self.gestionarSalas()
+
+        self.gestionarSalas()
+
     def modificarSala(self):
-        pass
-    def modificarSala(self):
-        pass
+        self.console.print("[cyan]\tIngrese el nombre del cine el cual desea modificar: [/cyan]")
+        cine = input("\tNombre del Cine: ")
+        self.listaCine.modificarPorCine(cine)
+
     def eliminarSala(self):
-        pass
+        self.console.print("[cyan]\tIngrese el nombre del cine el cual desea eliminar: [/cyan]")
+        cine = input("\tNombre del Cine: ")
+        self.listaCine.eliminarPorCine(cine)
 
     def mostrarSala(self):
         if self.listaCine is not None:
             self.listaCine.recorrerInicio()
         else:
-            print("No se encontraron datos disponibles.")
+            print("\tNo se encontraron datos disponibles.\n")
+
+    def gestionarCategorias(self):
+        while True:
+                    title = Text("\t\t   GESTIONAR CATEGORIAS Y PELICULAS", style="bold")
+                    panel = Panel(title, border_style="bold magenta", width=70, padding=(0, 2, 0, 2))  
+                    self.console.print(panel)
+                    self.console.print("\t[cyan]1. Cargar Archivo [/cyan]")
+                    self.console.print("\t[cyan]2. Añadir pelicula[/cyan]")
+                    self.console.print("\t[cyan]3. Modificar pelicula[/cyan]")
+                    self.console.print("\t[cyan]4. Eliminar pelicula[/cyan]")
+                    self.console.print("\t[cyan]5. Mostrar peliculas[/cyan]")
+                    self.console.print("\t[red]6. Volver al menú principal[/red]")
+                        
+                    subopcion = self.console.input("\n\tSeleccione una opción: ")
+
+                    if subopcion == "1":
+                        self.console.print("\tHas seleccionado cargar archivo.\n", style="green")
+                        self.cargarArhivosCategorias()
+
+                    elif subopcion == "2":
+                        self.console.print("\tHas seleccionado Añadir pelicula.\n", style="green")
+                        self.agregarCategoria()
+                        
+                    elif subopcion == "3":
+                        self.console.print("\tHas seleccionado Modificar pelicula.\n", style="green")
+                        self.modificarCategoria()
+                        
+                    elif subopcion == "4":
+                        self.console.print("\tHas seleccionado Eliminar pelicula.\n", style="green")
+                        self.eliminarCategoria()
+                        
+                    elif subopcion == "5":
+                        self.console.print("\tHas seleccionado Mostrar peliculas.\n", style="green")
+                        self.modificarCategoria()
+
+                    elif subopcion == "6":
+                        self.console.print("\tVolviendo al menú principal...\n", style="bold yellow")
+                        self.menuAdmi()
+
+                    else:
+                        self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
+
+    def cargarArhivosCategorias(self):
+        pass
+    def agregarCategoria(self):
+        pass
+    def modificarCategoria(self):
+        pass
+    def modificarCategoria(self):
+        pass
+    def eliminarCategoria(self):
+        pass
+    def mostrarCategoria(self):
+        pass
+
+    def gestionarBoletos(self):
+        pass

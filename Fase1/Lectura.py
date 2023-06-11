@@ -84,6 +84,11 @@ class Lectura:
                     listaCine.agregarUltimo(Cine(nombre, salas))
 
             #listaCine.recorrerInicio()
+            #cine = input("ingrese el cine: ")
+            #listaCine.eliminarPorCine(cine)
+            #listaCine.modificarPorCine(cine)
+            
+            #listaCine.recorrerInicio()
 
             return listaCine, salas
         except:
@@ -132,12 +137,6 @@ class Lectura:
                                             hora = s.text
         except:
             print(' Error al cargar el archivo...\n')  # Mensaje de error cuando ocurre una excepción al cargar el archivo
-
-
-    # Llama a la función con la ruta del archivo XML
-    #lecturaCP("C:\\Users\\amaya\\OneDrive\\Documents\\GitHub\\IPC2_V1S12023_ProyectpF1_202000558\\Fase1\\xml prueba\\C1.xml")
-    #lecturaU("C:\\Users\\amaya\\OneDrive\\Documents\\GitHub\\IPC2_V1S12023_ProyectpF1_202000558\\Fase1\\xml prueba\\U2.xml")
-    #lecturaS("C:\\Users\\amaya\\OneDrive\\Documents\\GitHub\\IPC2_V1S12023_ProyectpF1_202000558\\Fase1\\xml prueba\\S3.xml")
 
 #ruta = r"C:\Users\amaya\OneDrive\Documents\GitHub\IPC2_V1S12023_ProyectpF1_202000558\Fase1\xml prueba\S3.xml"
 #lector = Lectura()

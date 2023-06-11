@@ -6,3 +6,4 @@ class Usuario():
         self.telefono = telefono
         self.correo = correo
         self.contrasena = contrasena
+        self.factura = None #podria ser una lista de facturas
