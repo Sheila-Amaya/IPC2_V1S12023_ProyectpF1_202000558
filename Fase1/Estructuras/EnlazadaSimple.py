@@ -1,7 +1,7 @@
 from Estructuras.NodoS import *
 from rich.console import Console
 
-class EnlazadaSimple():
+class EnlazadaSimple:
     
     def __init__(self):
         self.primero = None
@@ -135,3 +135,29 @@ class EnlazadaSimple():
                 print("\tNo se encontró la sala en la lista")
 
             opcion = input("\t¿Desea modificar otra sala? (s/n): ")
+
+    def recorrerCategorias(self):
+        temp = self.primero
+        while temp:
+            print("\n\tNombre de la categoría:", temp.dato.nombre)
+            print("\tPeliculas:")
+            temp.dato.pelicula.recorrerPeliculas()  # Llama al método recorrerPeliculas de la lista doblemente circular enlazada
+            temp = temp.siguiente
+            if temp == self.primero:
+                break
+            
+    def mostrarPeliculas(self):
+        temp = self.primero
+        contador = 1
+        while temp:
+            print("\n\tCategoría:", temp.dato.nombre)
+            pelicula_actual = temp.dato.pelicula.primero
+            while pelicula_actual: #Recorrido de la DEC
+                print("\t\t",contador,". Título:", pelicula_actual.dato.titulo)
+                pelicula_actual = pelicula_actual.siguiente
+                if pelicula_actual == temp.dato.pelicula.primero:
+                    break
+                contador += 1
+            temp = temp.siguiente
+            if temp == self.primero:
+                break

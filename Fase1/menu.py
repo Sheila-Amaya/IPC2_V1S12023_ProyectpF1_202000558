@@ -13,6 +13,8 @@ class Menu:
     listaUsuario = EnlazadaSimple()
     listaCine = ListaDobleEnlazada()
     listaSala = EnlazadaSimple()
+    listaCategorias = EnlazadaSimple()
+    listaPeliculas = ListaDobleEnlazada()
     
     def __init__(self):
         self.console = Console()
@@ -99,8 +101,12 @@ class Menu:
             else:
                 console.print("\tOpción inválida. Por favor, selecciona una opción válida.", style="bold red")
 
-    def verPeliculas():
-        pass
+    def verPeliculas(self):
+        if self.listaCategorias is not None:
+            self.listaCategorias.mostrarPeliculas()
+            self.mostrar_menu()
+        else:
+            print("\tNo se encontraron datos disponibles.\n")
 
     def sesionCliente(self):
         nombre_usuario = self.console.input("\tIngresa tu nombre de usuario: ")
@@ -200,7 +206,7 @@ class Menu:
                 self.console.print("\tHas seleccionado la opción 4.\n", style="green")
                 self.gestionarBoletos()
 
-            elif opcion == "": #SALIR PARA EL MENU DEL ADMINISTRADOR
+            elif opcion == "5": #SALIR PARA EL MENU DEL ADMINISTRADOR
                 self.console.print("\tVolviendo al menú principal...", style="bold yellow")
                 print()
                 self.mostrar_menu()
@@ -483,7 +489,7 @@ class Menu:
                         
                     elif subopcion == "5":
                         self.console.print("\tHas seleccionado Mostrar peliculas.\n", style="green")
-                        self.modificarCategoria()
+                        self.mostrarCategoria()
 
                     elif subopcion == "6":
                         self.console.print("\tVolviendo al menú principal...\n", style="bold yellow")
@@ -493,17 +499,40 @@ class Menu:
                         self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
 
     def cargarArhivosCategorias(self):
-        pass
+        console = Console()
+        lector = Lectura()  # Crear una instancia de la clase Lectura
+        while True:
+            console.print("\tIngrese la ruta del archivo: ", style="bold yellow")
+            ruta = input('\t »  ')
+            
+            resultado = lector.lecturaCP(ruta)  # Obtener el resultado de la función lecturaC
+
+            if resultado is not None:
+                self.listaCategorias, self.listaPeliculas = resultado  # Asignar el resultado a la variable listaCategorias
+                console.print("\t[green]Archivo cargado exitosamente.[/green]")
+            else:
+                console.print("\t[red]Error al cargar el archivo.[/red]")
+            
+            opcion = input("\n\tDesea agregar otro archivo? (s/n): ")
+            if opcion.lower() != "s":
+                break
+
+        self.gestionarCategorias()
+
     def agregarCategoria(self):
         pass
+
     def modificarCategoria(self):
         pass
-    def modificarCategoria(self):
-        pass
+
     def eliminarCategoria(self):
         pass
+
     def mostrarCategoria(self):
-        pass
+        if self.listaCategorias is not None:
+            self.listaCategorias.recorrerCategorias()
+        else:
+            print("\tNo se encontraron datos disponibles.\n")
 
     def gestionarBoletos(self):
         pass

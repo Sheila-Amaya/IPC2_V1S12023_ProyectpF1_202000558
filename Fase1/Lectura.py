@@ -4,6 +4,9 @@ from usuario import *
 from Estructuras.DobleEnlazada import *
 from cine import *
 from sala import *
+from Estructuras.DobleEnlazadaCircular import *
+from categoria import *
+from pelicula import *
 
 class Lectura:
     
@@ -94,50 +97,60 @@ class Lectura:
         except:
             print('Error al cargar el archivo...\n')  # Mensaje de error cuando ocurre una excepción al cargar el archivo
 
-    def lecturaCP(self, ruta): #CATEGORIA Y PELICULAS > DOBLE ENLAZADA CIRCULAR
+    def lecturaCP(self, ruta):
         try:
             tree = ET.parse(ruta)  # Parsea el archivo XML y crea un objeto de árbol
             root = tree.getroot()  # Obtiene la etiqueta raíz del árbol
             
+            listaCategorias = EnlazadaSimple()
+            
             # Itera sobre los elementos hijos de la raíz (raiz=categorias)
             for elemento in root:
-                #print(root)
                 # Verifica si el elemento actual tiene la etiqueta "categoria"
                 if elemento.tag == "categoria":
-                    # si tiene la etiqueta categoria itera sobre los subelementos de la etiqueta "categoria" -> mombre , pelicula
-                    for subelemento in elemento: #itera sobre la etiqueta categorias 
-                        #print(subelemento) # Imprime el subelemento actual
-                        
-                        #CATEGORIA
-                        nombre = ""
-                        #PELICULA
-                        titulo = ""
-                        director = ""
-                        anio = 0
-                        fecha = ""
-                        hora = ""
-                        
+                    nombre = ""
+                    listaPeliculas = CicularDobleEnlazada()  # Crea una nueva instancia de la lista de películas para cada categoría
+                    
+                    # Itera sobre los subelementos de la etiqueta "categoria" -> nombre, peliculas
+                    for subelemento in elemento:
                         if subelemento.tag == "nombre":
                             nombre = subelemento.text
-                            #print("\ncategoria nombre: "+subelemento.text+"\n") #imprime el contenido del tag
+                        
                         elif subelemento.tag == "peliculas":
-                            for sub in subelemento: 
-                                #print(sub) #sub es la etiqueta pelicula
+                            # Itera sobre las etiquetas "pelicula" dentro de "peliculas"
+                            for sub in subelemento:
                                 if sub.tag == "pelicula":
-                                    for s in sub: #itera sobre la etiqueta sub y extrae las sub etiquetas
+                                    titulo = ""
+                                    director = ""
+                                    anio = ""
+                                    fecha = ""
+                                    hora = ""
+                                    precio = float(42)
+                                    
+                                    # Itera sobre las subetiquetas de "pelicula" y extrae los datos
+                                    for s in sub:
                                         if s.tag == "titulo":
                                             titulo = s.text
                                         elif s.tag == "director":
                                             director = s.text
                                         elif s.tag == "anio":
-                                            anio = int(s.text)
+                                            anio = s.text
                                         elif s.tag == "fecha":
                                             fecha = s.text
                                         elif s.tag == "hora":
                                             hora = s.text
-        except:
-            print(' Error al cargar el archivo...\n')  # Mensaje de error cuando ocurre una excepción al cargar el archivo
-
-#ruta = r"C:\Users\amaya\OneDrive\Documents\GitHub\IPC2_V1S12023_ProyectpF1_202000558\Fase1\xml prueba\S3.xml"
+                                    
+                                    listaPeliculas.agregarFinal(Pelicula(titulo, director, anio, fecha, hora, precio))
+                    
+                    listaCategorias.agregarUltimo(Categoria(nombre, listaPeliculas))
+            
+            #listaCategorias.recorrerCategorias()
+            
+            return listaCategorias, listaPeliculas
+        
+        except Exception as e:
+            print('Error al cargar el archivo:', str(e))
+            
+#ruta = r"C:\Users\amaya\OneDrive\Documents\GitHub\IPC2_V1S12023_ProyectpF1_202000558\Fase1\xml prueba\C1.xml"
 #lector = Lectura()
-#listaUsuarios = lector.lecturaS(ruta)
+#lista = lector.lecturaCP(ruta)
