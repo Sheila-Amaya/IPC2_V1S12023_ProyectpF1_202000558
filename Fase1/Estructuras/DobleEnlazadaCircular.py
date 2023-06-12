@@ -82,3 +82,43 @@ class CicularDobleEnlazada:
             pelicula_actual = pelicula_actual.siguiente
             if pelicula_actual == self.primero:
                 break
+            
+    def modificarPeliculas(self):
+        opcion = 's'
+        while opcion.lower() == 's':
+            titulo_buscar = input("\n\tIngrese el nombre de la pelicula a modificar: ")
+            
+            pelicula_actual = self.primero
+            while pelicula_actual:
+                if pelicula_actual.dato.titulo == titulo_buscar:  # Si se encuentra la película buscada
+                    print("\n\tDatos actuales de la película:")
+                    print("\tTítulo:", pelicula_actual.dato.titulo)
+                    print("\tDirector:", pelicula_actual.dato.director)
+                    print("\tAño:", pelicula_actual.dato.anio)
+                    print("\tFecha:", pelicula_actual.dato.fecha)
+                    print("\tHora:", pelicula_actual.dato.hora)
+                    print("\tPrecio (Q):", pelicula_actual.dato.precio)
+                    print()
+
+                    nuevo_titulo = input("\tIngrese el nuevo título: ")
+                    nuevo_director = input("\tIngrese el nuevo director: ")
+                    nuevo_anio = input("\tIngrese el nuevo año: ")
+                    nueva_fecha = input("\tIngrese la nueva fecha: ")
+                    nueva_hora = input("\tIngrese la nueva hora: ")
+                    nuevo_precio = input("\tIngrese el nuevo precio (Q): ")
+
+                    pelicula_actual.dato.titulo = nuevo_titulo
+                    pelicula_actual.dato.director = nuevo_director
+                    pelicula_actual.dato.anio = nuevo_anio
+                    pelicula_actual.dato.fecha = nueva_fecha
+                    pelicula_actual.dato.hora = nueva_hora
+                    pelicula_actual.dato.precio = nuevo_precio
+
+                    print("\tLos datos de la película se han modificado.")
+                    return
+
+                pelicula_actual = pelicula_actual.siguiente
+                if pelicula_actual == self.primero:  # Si se ha recorrido toda la lista sin encontrar la película
+                    break
+
+            print("\tLa película no se encontró en la lista.")

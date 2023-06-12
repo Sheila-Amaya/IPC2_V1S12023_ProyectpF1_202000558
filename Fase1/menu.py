@@ -14,7 +14,7 @@ class Menu:
     listaCine = ListaDobleEnlazada()
     listaSala = EnlazadaSimple()
     listaCategorias = EnlazadaSimple()
-    listaPeliculas = ListaDobleEnlazada()
+    listaPeliculas =    CicularDobleEnlazada()
     
     def __init__(self):
         self.console = Console()
@@ -500,15 +500,22 @@ class Menu:
 
     def cargarArhivosCategorias(self):
         console = Console()
-        lector = Lectura()  # Crear una instancia de la clase Lectura
+        lector = Lectura()
         while True:
             console.print("\tIngrese la ruta del archivo: ", style="bold yellow")
             ruta = input('\t »  ')
             
-            resultado = lector.lecturaCP(ruta)  # Obtener el resultado de la función lecturaC
-
+            resultado = lector.lecturaCP(ruta)
+            
             if resultado is not None:
-                self.listaCategorias, self.listaPeliculas = resultado  # Asignar el resultado a la variable listaCategorias
+                categorias_nuevas, peliculas_nuevas = resultado
+                if self.listaCategorias.estaVacia():
+                    self.listaCategorias = categorias_nuevas
+                else:
+                    temp = categorias_nuevas.primero
+                    while temp:
+                        self.listaCategorias.agregarUltimo(temp.dato)
+                        temp = temp.siguiente
                 console.print("\t[green]Archivo cargado exitosamente.[/green]")
             else:
                 console.print("\t[red]Error al cargar el archivo.[/red]")
@@ -520,13 +527,65 @@ class Menu:
         self.gestionarCategorias()
 
     def agregarCategoria(self):
-        pass
+        self.console.print("[cyan]\n\tIngrese los datos para la categoría nueva: \n[/cyan]")
+
+        nombre = input("\tNombre de la categoría: ")
+        categoria = self.listaCategorias.buscarPorCategoria(nombre)
+
+        if categoria is not None:
+            opcion = input("\n\tLa categoría ya existe. ¿Desea agregar más películas a la categoría? (s/n): ")
+            if opcion.lower() == "s":
+                while True:
+                    titulo = input("\tTítulo de la película: ")
+                    director = input("\tDirector de la película: ")
+                    anio = input("\tAño de la película: ")
+                    fecha = input("\tFecha de la película: ")
+                    hora = input("\tHora de la película: ")
+                    precio = float(input("\tPrecio de la película (Q):"))
+
+                    pelicula = Pelicula(titulo, director, anio, fecha, hora, precio)
+
+                    categoria.peliculas.agregarFinal(pelicula)  # Agrega la película a la doble circular enlazada
+
+                    opcion = input("\n\t¿Desea agregar otra película? (s/n): ")
+                    print()
+                    if opcion.lower() != "s":
+                        break
+                self.console.print("[green]\n\tPelículas agregadas con éxito a la categoría existente.[/green]\n")
+            else:
+                self.console.print("[yellow]\n\tNo se agregaron nuevas películas a la categoría existente.[/yellow]\n")
+        else:
+            # La categoría no existe, se crea una nueva con su lista de películas
+            peliculas = CicularDobleEnlazada()  # Crear instancia de CicularDobleEnlazada
+            while True:
+                titulo = input("\tTítulo de la película: ")
+                director = input("\tDirector de la película: ")
+                anio = input("\tAño de la película: ")
+                fecha = input("\tFecha de la película: ")
+                hora = input("\tHora de la película: ")
+                precio = float(input("\tPrecio de la película (Q):"))
+
+                pelicula = Pelicula(titulo, director, anio, fecha, hora, precio)
+
+                peliculas.agregarFinal(pelicula)  # Agrega la película a la doble circular enlazada
+
+                opcion = input("\n\t¿Desea agregar otra película? (s/n): ")
+                print()
+                if opcion.lower() != "s":
+                    break
+            nueva_categoria = Categoria(nombre, peliculas)
+            self.listaCategorias.agregarUltimo(nueva_categoria)
+            self.console.print("[green]\n\tCategoría y películas agregadas con éxito.[/green]\n")
 
     def modificarCategoria(self):
-        pass
+        self.console.print("[cyan]\tIngrese el nombre de la categoria  cual desea modificar: [/cyan]")
+        categoria = input("\tNombre de la categoria: ")
+        self.listaCategorias.buscarCategoria(categoria)
 
     def eliminarCategoria(self):
-        pass
+        self.console.print("[cyan]\tIngrese el nombre de la categoria la cual desea eliminar: [/cyan]")
+        nombre = input("\tNombre de la categoria: ")
+        self.listaCategorias.eliminarPorCategoria(nombre)
 
     def mostrarCategoria(self):
         if self.listaCategorias is not None:

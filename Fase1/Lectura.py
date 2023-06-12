@@ -149,7 +149,7 @@ class Lectura:
             return listaCategorias, listaPeliculas
         
         except Exception as e:
-            print('Error al cargar el archivo:', str(e))
+            print('Error al cargar el archivo')
             
 #ruta = r"C:\Users\amaya\OneDrive\Documents\GitHub\IPC2_V1S12023_ProyectpF1_202000558\Fase1\xml prueba\C1.xml"
 #lector = Lectura()

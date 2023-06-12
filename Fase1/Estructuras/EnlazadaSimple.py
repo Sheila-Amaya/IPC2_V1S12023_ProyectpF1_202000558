@@ -145,7 +145,7 @@ class EnlazadaSimple:
             temp = temp.siguiente
             if temp == self.primero:
                 break
-            
+
     def mostrarPeliculas(self):
         temp = self.primero
         contador = 1
@@ -161,3 +161,64 @@ class EnlazadaSimple:
             temp = temp.siguiente
             if temp == self.primero:
                 break
+
+    def buscarPorCategoria(self, categoria):
+        #console = Console()
+        temp = self.primero
+        while temp:
+            if temp.dato.nombre == categoria:
+                return temp.dato  # Devuelve el nodo si se encuentra el correo
+            temp = temp.siguiente
+        return None  # Devuelve None si no se encuentra el correo
+
+    def buscarCategoria(self, categoria):
+        if self.estaVacia():
+            print("La lista está vacía")
+        else:
+            temp = self.primero
+            while temp is not None:
+                if temp.dato.nombre == categoria:  # se busca el elemento a través de su atributo
+                    # Mostrar los datos actuales 
+                    print("\n\tDatos actuales de la categoria:")
+                    print("\tNombre categoria: " + temp.dato.nombre)
+                    print("\tPeliculas:")
+                    temp.dato.pelicula.recorrerPeliculas()  
+                    
+                    # Solicitar los nuevos datos de la categoria
+                    print("\tIngrese los nuevos de la categoria:")
+                    nuevo_nombre = input("\tNombre: ")
+                    
+                    # Modificar los datos del cine
+                    temp.dato.nombre = nuevo_nombre
+                    # Modificar las salas del cine
+                    opcion = input("\nDesea modificar las peliculas de la categoria? (s/n): ")
+                    if opcion.lower() == "s":
+                        temp.dato.pelicula.modificarPeliculas()
+                        
+                    print("\n\tElemento modificado")
+                    return
+                temp = temp.siguiente
+            print("\n\tNo se encontró el elemento en la lista")
+
+    def eliminarPorCategoria(self, categoria):
+        temp = self.primero
+        previo = None
+        
+        while temp:
+            if temp.dato.nombre == categoria:
+                if previo:
+                    previo.siguiente = temp.siguiente
+                    if temp == self.ultimo:
+                        self.ultimo = previo
+                else:
+                    self.primero = temp.siguiente
+                    if temp == self.ultimo:
+                        self.ultimo = None
+                print("\tLa información correspondiente a la categoria {} ha sido eliminada del sistema.".format(categoria))
+                return
+            previo = temp
+            temp = temp.siguiente
+        
+        print("\tNo se encontró ninguna información correspondiente a la categoria {} en el sistema.".format(categoria))
+        
+
