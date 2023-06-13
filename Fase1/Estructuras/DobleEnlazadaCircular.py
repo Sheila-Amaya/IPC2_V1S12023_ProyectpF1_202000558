@@ -1,4 +1,5 @@
 from Estructuras.NodoDEC import *
+from pelicula import *
 class CicularDobleEnlazada:
 
     def __init__(self):
@@ -141,11 +142,8 @@ class CicularDobleEnlazada:
             if pelicula_actual.dato.titulo.lower() == nombre.lower():
                 print("\n\tPelícula encontrada:\n")
                 print("\t\tTítulo:", pelicula_actual.dato.titulo)
-                print("\t\tDirector:", pelicula_actual.dato.director)
-                print("\t\tAño:", pelicula_actual.dato.anio)
-                print("\t\tFecha:", pelicula_actual.dato.fecha)
-                print("\t\tHora:", pelicula_actual.dato.hora)
-                print("\t\tPrecio (Q):", pelicula_actual.dato.precio)
+                print("\t\tFecha función:", pelicula_actual.dato.fecha)
+                print("\t\tHora de la funcion:", pelicula_actual.dato.hora)
                 return
                 
             pelicula_actual = pelicula_actual.siguiente

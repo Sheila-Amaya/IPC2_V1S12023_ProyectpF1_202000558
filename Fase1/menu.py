@@ -15,6 +15,7 @@ class Menu:
     listaSala = EnlazadaSimple()
     listaCategorias = EnlazadaSimple()
     listaPeliculas =    CicularDobleEnlazada()
+    listaFavoritos = []
     
     def __init__(self):
         self.console = Console()
@@ -159,7 +160,7 @@ class Menu:
                 break
 
             elif opcion == "2":
-                self.console.print("\\tHas seleccionado la opción 2", style="bold yellow")
+                self.console.print("\tHas seleccionado la opción 2", style="bold yellow")
                 self.peliculasFavoritas()
                 print()
                 break
@@ -662,8 +663,59 @@ class Menu:
             print("\tNo se encontraron datos disponibles.\n")
             self.menuCliente()
     
-    def peliculasFavoritas(self): #CLIENTE
-        pass
+    def peliculasFavoritas(self): #sub menu de ver peliculas cliente
+        if self.listaCategorias is not None:
+            print()
+            title = Text("\t\t  LISTADO DE PELICULAS FAVORITAS", style="bold")
+            # Ajusta el padding izquierdo y derecho del panel
+            panel = Panel(title, border_style="bold yellow", width=70, padding=(0, 2, 0, 2))  
+            self.console.print(panel)
+            self.console.print("[cyan]\n\t1. Agregar peliculas favoritas[/cyan]")
+            self.console.print("[cyan]\t2. Ver listado de peliculas favoritas[/cyan]")
+            self.console.print("[red]\t3. Regresar[/red]")
+            
+            opcion = input("\n\tSeleccione una opción:")
+
+            if opcion == "1":
+                self.agregarFavorito()
+                print()
+            if opcion == "2":
+                self.verPeliculaFavorito()
+                self.peliculasFavoritas()
+                print()
+            if opcion == "3":
+                self.console.print("\tVolviendo al menú principal...", style="bold yellow")
+                self.menuCliente()
+                print()
+            else:
+                print("\tOpción no válida. Por favor, seleccione una opción válida.")
+                self.peliculasFavoritas()
+
+    def agregarFavorito(self): #sub menu de ver peliculas cliente
+        categoria = input("\tIngrese el nombre de la categoría: ")
+        # Buscar la categoría en la lista enlazada de categorías
+        categoria_actual = self.listaCategorias.buscarPorCategoria(categoria)
+        if categoria_actual is not None:
+            # Mostrar las películas de la categoría encontrada
+            categoria_actual.pelicula.verSoloPeliculas()
+            # Solicitar el nombre de la película para agregar a favoritos
+            nombre_pelicula = input("\n\tIngrese el nombre de la película: ")
+            self.listaFavoritos.append(nombre_pelicula)
+            print("\tLa película se ha agregado a la lista de favoritos.")
+        else:
+            print("\tLa categoría no se encontró en la lista.")
+
+        self.peliculasFavoritas()
+
+    def verPeliculaFavorito(self): #sub menu de ver peliculas cliente
+        print("\n\t====================Peliculas Favoritas====================\n")
+        if len(self.listaFavoritos) > 0:
+            contador = 1
+            for pelicula in self.listaFavoritos:
+                print("\t{}. {}".format(contador, pelicula))
+                contador += 1
+        else:
+            print("\n\tNo hay películas favoritas en la lista.")
 
     def comprarBoletos(self): #CLIENTE
         pass

@@ -167,7 +167,7 @@ class EnlazadaSimple:
         temp = self.primero
         while temp:
             if temp.dato.nombre == categoria:
-                return temp.dato  # Devuelve el nodo si se encuentra el correo
+                return temp.dato  # Devuelve el nodo si se encuentra la categoria
             temp = temp.siguiente
         return None  # Devuelve None si no se encuentra la categoria
 
@@ -231,5 +231,6 @@ class EnlazadaSimple:
                     # Mostrar los datos actuales 
                     print("\n\tNombre categoria: " + temp.dato.nombre)
                     print("\tPeliculas:")
-                    temp.dato.pelicula. verSoloPeliculas()  
+                    temp.dato.pelicula.verSoloPeliculas()  
                 temp = temp.siguiente
+
