@@ -7,3 +7,5 @@ class Usuario():
         self.correo = correo
         self.contrasena = contrasena
         self.factura = None #podria ser una lista de facturas
+        self.peliculasFavoritas = []
+        self.boleto = None

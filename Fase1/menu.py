@@ -87,11 +87,13 @@ class Menu:
             elif opcion == "2": #REGISTRAR USUARIO
                 console.print("\tHas seleccionado la opción 2.", style="green")
                 self.registrarUsuario()
+                print()
                 break
                 
             elif opcion == "3": #VER PELICULAS
                 console.print("\tHas seleccionado la opción 3.", style="green")
                 self.verPeliculas()
+                print()
                 break
 
             elif opcion == "4":
@@ -103,12 +105,21 @@ class Menu:
 
     def verPeliculas(self):
         if self.listaCategorias is not None:
-            self.listaCategorias.mostrarPeliculas()
+            opcion = input("\t¿Desea ver el listado general de películas (G) o filtrar por categoría (C)? ").lower()
+            
+            if opcion == "g":
+                self.listaCategorias.mostrarPeliculas()
+            elif opcion == "c":
+                categoria = input("\tIngrese el nombre de la categoría: ")
+                self.listaCategorias.buscarUnaCategoria(categoria)
+            else:
+                print("\tOpción no válida. Por favor, seleccione 'G' para el listado general o 'C' para filtrar por categoría.")
+            
             self.mostrar_menu()
         else:
             print("\tNo se encontraron datos disponibles.\n")
 
-    def sesionCliente(self):
+    def sesionCliente(self): #CLIENTE
         nombre_usuario = self.console.input("\tIngresa tu nombre de usuario: ")
         contrasena = self.console.input("\tIngresa tu contraseña: ")
 
@@ -122,8 +133,9 @@ class Menu:
             temp = temp.siguiente
 
         self.console.print("\tCredenciales incorrectas. Vuelve a intentarlo.\n", style="bold red")
+        self.sesionCliente()
 
-    def menuCliente(self):
+    def menuCliente(self): #CLIENTE
         title = Text("\t\t       MENU USUARIO", style="bold")
         # Ajusta el padding izquierdo y derecho del panel
         panel = Panel(title, border_style="bold yellow", width=70, padding=(0, 2, 0, 2))  
@@ -142,15 +154,28 @@ class Menu:
 
             if opcion == "1":
                 self.console.print("\tHas seleccionado la opción 1.", style="green")
+                self.VerPeliculasCliente()
+                print()
+                break
+
             elif opcion == "2":
-                self.console.print("\tVolviendo al menú principal...", style="bold yellow")
+                self.console.print("\\tHas seleccionado la opción 2", style="bold yellow")
+                self.peliculasFavoritas()
                 print()
+                break
+
             elif opcion == "3":
-                self.console.print("\tVolviendo al menú principal...", style="bold yellow")
+                self.console.print("\tHas seleccionado la opción 3", style="bold yellow")
+                self.comprarBoletos()
                 print()
+                break
+
             elif opcion == "4":
-                self.console.print("\tVolviendo al menú principal...", style="bold yellow")
-                print() 
+                self.console.print("\tHas seleccionado la opción 4", style="bold yellow")
+                self.historialBoletos()
+                print()
+                break
+            
             elif opcion == "5":
                 self.console.print("\tVolviendo al menú principal...", style="bold yellow")
                 print()
@@ -171,6 +196,7 @@ class Menu:
             temp = temp.siguiente
 
         self.console.print("\tCredenciales incorrectas. Vuelve a intentarlo.\n", style="bold red")
+        self.sesionAdmi()
 
     def menuAdmi(self):
         # Imprime el título del panel 
@@ -213,6 +239,7 @@ class Menu:
 
             else:
                 self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
+                self.menuAdmi()
 
     def registrarUsuario(self): #Clientes unicamente
         self.console.print("[cyan]\n\tIngrese los datos para el usuario nuevo: \n[/cyan]")
@@ -593,5 +620,54 @@ class Menu:
         else:
             print("\tNo se encontraron datos disponibles.\n")
 
-    def gestionarBoletos(self):
+    def gestionarBoletos(self): #ADMINISTRADOR
         pass
+
+    def VerPeliculasCliente(self): #CLIENTE
+        if self.listaCategorias is not None:
+            print()
+            title = Text("\t\t    VER LISTADO DE PELICULAS", style="bold")
+            # Ajusta el padding izquierdo y derecho del panel
+            panel = Panel(title, border_style="bold yellow", width=70, padding=(0, 2, 0, 2))  
+            self.console.print(panel)
+            self.console.print("[cyan]\n\t1. Ver el listado general de películas[/cyan]")
+            self.console.print("[cyan]\t2. Filtrar por categoría[/cyan]")
+            self.console.print("[cyan]\t3. Ver detalles de una película[/cyan]")
+            self.console.print("[red]\t4. Regresar[/red]")
+            
+            opcion = input("\n\tSeleccione una opción:")
+
+            if opcion == "1":
+                self.listaCategorias.mostrarPeliculas()
+            elif opcion == "2":
+                categoria = input("\tIngrese el nombre de la categoría: ")
+                self.listaCategorias.buscarUnaCategoria(categoria)
+            elif opcion == "3":
+                categoria = input("\tIngrese el nombre de la categoría: ")
+                categoria_actual = self.listaCategorias.buscarPorCategoria(categoria)
+                if categoria_actual is not None:
+                    titulo = input("\tIngrese el título de la película: ")
+                    categoria_actual.pelicula.buscarPeliculaPorNombre(titulo)
+                else:
+                    print("\tLa categoría no se encontró en la lista.")
+            elif opcion == "4":
+                self.console.print("\tVolviendo al menú principal...", style="bold yellow")
+                self.menuCliente()
+                print()
+            else:
+                print("\tOpción no válida. Por favor, seleccione una opción válida.")
+            
+            self.VerPeliculasCliente()
+        else:
+            print("\tNo se encontraron datos disponibles.\n")
+            self.menuCliente()
+    
+    def peliculasFavoritas(self): #CLIENTE
+        pass
+
+    def comprarBoletos(self): #CLIENTE
+        pass
+    
+    def historialBoletos(self): #CLIENTE
+        pass
+    

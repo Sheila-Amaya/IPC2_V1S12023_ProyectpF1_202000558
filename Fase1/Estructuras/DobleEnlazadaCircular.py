@@ -122,3 +122,34 @@ class CicularDobleEnlazada:
                     break
 
             print("\tLa película no se encontró en la lista.")
+            
+    def verSoloPeliculas(self):
+        pelicula_actual = self.primero
+        while pelicula_actual:
+            print("\t\tTítulo:", pelicula_actual.dato.titulo)
+            pelicula_actual = pelicula_actual.siguiente
+            if pelicula_actual == self.primero:
+                break
+            
+    def buscarPeliculaPorNombre(self, nombre):
+        if self.estaVacia():
+            print("\tNo hay películas en la lista.")
+            return
+
+        pelicula_actual = self.primero
+        while True:
+            if pelicula_actual.dato.titulo.lower() == nombre.lower():
+                print("\n\tPelícula encontrada:\n")
+                print("\t\tTítulo:", pelicula_actual.dato.titulo)
+                print("\t\tDirector:", pelicula_actual.dato.director)
+                print("\t\tAño:", pelicula_actual.dato.anio)
+                print("\t\tFecha:", pelicula_actual.dato.fecha)
+                print("\t\tHora:", pelicula_actual.dato.hora)
+                print("\t\tPrecio (Q):", pelicula_actual.dato.precio)
+                return
+                
+            pelicula_actual = pelicula_actual.siguiente
+            if pelicula_actual == self.primero:
+                break
+
+        print("\tLa película no se encontró en la lista.")
