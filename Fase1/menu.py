@@ -7,6 +7,7 @@ from usuario import *
 from Estructuras.DobleEnlazada import *
 from cine import *
 from sala import *
+from boleto import *
 
 lector = Lectura() #variable global
 class Menu:
@@ -16,9 +17,13 @@ class Menu:
     listaCategorias = EnlazadaSimple()
     listaPeliculas =    CicularDobleEnlazada()
     listaFavoritos = []
+    listaAsientos = []  # Lista para almacenar los números de asientos seleccionados
+    listaHistorial = []
+    boletos = 0
     
     def __init__(self):
         self.console = Console()
+
         self.admiPorDefecto() #para que se inicialice al ejecutar el programa
     
     def admiPorDefecto(self):
@@ -622,7 +627,13 @@ class Menu:
             print("\tNo se encontraron datos disponibles.\n")
 
     def gestionarBoletos(self): #ADMINISTRADOR
-        pass
+        # Imprimir los números de boleto disponibles
+        print("\n\tNúmeros de boleto disponibles:")
+        for boleto in self.listaHistorial:
+            print("\t"+ boleto.numero_boleto)
+
+        boletoCancelado = input("\n\tIngrese el numero de boleto que desea cancelar: ")
+        self.cancelarBoleto(boletoCancelado)
 
     def VerPeliculasCliente(self): #CLIENTE
         if self.listaCategorias is not None:
@@ -717,9 +728,150 @@ class Menu:
         else:
             print("\n\tNo hay películas favoritas en la lista.")
 
-    def comprarBoletos(self): #CLIENTE
-        pass
-    
-    def historialBoletos(self): #CLIENTE
-        pass
-    
+    def comprarBoletos(self):
+        print()
+        title = Text("\t\t  COMPRAR BOLETOS", style="bold")
+        # Ajusta el padding izquierdo y derecho del panel
+        panel = Panel(title, border_style="bold yellow", width=70, padding=(0, 2, 0, 2))
+        self.console.print(panel)
+
+        print("\n\t====================CINE==================\n")
+        self.listaCine.recorrerInicio()  # Retorna los datos
+        print("\n\t===========================================================\n")
+
+        cine = input("\n\tSeleccione Cine de su preferencia: ")
+        cine_actual = self.listaCine.buscarCine(cine)
+
+        if cine_actual is not None:
+            sala = input("\tIngrese el número de sala de su preferencia: ")
+            sala_encontrada = cine_actual.sala.buscarPorSala(sala)
+
+            if sala_encontrada is not None:
+                rango_asientos = range(1, int(sala_encontrada.asientos) + 1)  # Rango de asientos disponibles (convertido a entero)
+
+                numero_asiento = int(input("\tIngrese el número de asiento de su preferencia: "))
+
+                if numero_asiento in rango_asientos:
+                    if numero_asiento not in self.listaAsientos:
+                        self.listaAsientos.append(numero_asiento)
+                        print("\n\tAsiento seleccionado: ", numero_asiento)
+
+                        print("\n\t====================Peliculas Disponibles==================\n")
+                        self.listaCategorias.mostrarPeliculas()
+                        print("\n\t===========================================================\n")
+
+                        categoria = input("\tIngrese el nombre de la categoría: ")
+                        categoria_actual = self.listaCategorias.buscarPorCategoria(categoria)
+                        if categoria_actual is not None:
+                            titulo = input("\tIngrese el título de la película: ")
+                            pelicula_encontrada = categoria_actual.pelicula.buscarPeliculaParaBoleto(titulo)
+                            if pelicula_encontrada is not None:
+                                num_boletos = int(input("\n\tIngrese la cantidad de boletos a comprar: "))
+                                totalCompra = pelicula_encontrada.precio * num_boletos
+                                self.boletos += 1  # Incrementar el número de boleto
+                                self.generarFactura(categoria,cine_actual.nombre, titulo, num_boletos, self.boletos, totalCompra, numero_asiento)  # Generar factura con los detalles de la compra
+
+                            else:
+                                print("\n\tNo se encontró la película especificada")
+                        else:
+                            print("\n\tNo se encontró la categoría especificada")
+                    else:
+                        print("\n\tEl asiento ya está ocupado por otro usuario")
+                else:
+                    print("\n\tEl número de asiento ingresado no es válido")
+            else:
+                print("\n\tNo se encontró la sala especificada")
+        else:
+            print("\n\tNo se encontró el cine especificado")
+
+    def generarFactura(self, categoria, cine, pelicula, num_boletos, boletos, total, numero_asiento):
+        nombre = input("\tIngrese el nombre para la factura: ")
+        if nombre == "C/F":
+            print("\n\n\t======================== FACTURA =======================")
+            print("\tCine: ", cine)
+            print("\tNúmero de boleto: ", "#USACIPC2_202000558_" + str(boletos))  # Número de boleto con formato
+            print("\tNombre:" + nombre)
+            print("\tPelícula: ", pelicula)
+
+            categoria_actual = self.listaCategorias.buscarPorCategoria(categoria)
+            peli = categoria_actual.pelicula.buscarPeli(pelicula)
+
+            fecha = peli.fecha
+            hora = peli.hora
+            print("\tFecha función: ", fecha)
+            print("\tHora función: ", hora)
+            print("\n\tNúmero de boletos: ", num_boletos)
+            print("\tNúmero de asiento: ", numero_asiento)
+            print("\tTotal a pagar: Q", total)
+            print("\n\t¡Gracias por su compra!")
+            print("\n\t===========================================================\n")
+
+            # Agregar boleto al historial
+            boleto = Boleto(nombre, cine, "#USACIPC2_202000558_" + str(boletos), pelicula, fecha, hora, num_boletos, numero_asiento, total)
+            self.listaHistorial.append(boleto)
+            self.menuCliente()
+        else:
+            NIT = input("\tIngrese el NIT para la factura: ")
+            direccion = input("\tDirección: ")
+
+            print("\n\n\t======================== FACTURA ========================\n")
+            print("\tCine: ", cine)
+            print("\tNúmero de boleto: ", "#USACIPC2_202000558_" + str(boletos))  # Número de boleto con formato
+            print("\tNombre:" + nombre)
+            print("\tNIT:" + NIT)
+            print("\tDirección:" + direccion)
+            print("\tPelícula: ", pelicula)
+
+            categoria_actual = self.listaCategorias.buscarPorCategoria(categoria)
+            peli = categoria_actual.pelicula.buscarPeli(pelicula)
+
+            fecha = peli.fecha
+            hora = peli.hora
+            print("\t\nFecha función: ", fecha)
+            print("\tHora función: ", hora)
+            print("\tNúmero de boletos: ", num_boletos)
+            print("\tNúmero de asiento: ", numero_asiento)
+            print("\tTotal a pagar: Q", total)
+            print("\n\t¡Gracias por su compra!")
+            print("\n\t===========================================================\n")
+
+            # Agregar boleto al historial
+            boleto = Boleto(nombre, cine, "#USACIPC2_202000558_" + str(boletos), pelicula, fecha, hora, num_boletos, numero_asiento, total)
+            self.listaHistorial.append(boleto)
+            self.menuCliente()
+
+    def historialBoletos(self):
+        if len(self.listaHistorial) == 0:
+            print("\n\tEl historial de boletos está vacío.")
+        else:
+            print("\n\n\t==================== HISTORIAL DE BOLETOS ====================")
+            for boleto in self.listaHistorial:
+                print("\t\nNombre:", boleto.nombre)
+                print("\tCine:", boleto.cine)
+                print("\tNúmero de boleto:", boleto.numero_boleto)
+                print("\tPelícula:", boleto.pelicula)
+                print("\tFecha función:", boleto.fecha_funcion)
+                print("\tHora función:", boleto.hora_funcion)
+                print("\tNúmero de boletos:", boleto.num_boletos)
+                print("\tNúmero de asiento:", boleto.numero_asiento)
+                print("\tMonto pagado: Q", boleto.monto_pagado)
+                estado = "Cancelado" if boleto.cancelado else "Activo"
+                print("\tEstado:", estado)
+                print("\n\t==============================================================\n")
+        self.menuCliente()
+        self.menuCliente()
+        
+    def cancelarBoleto(self, numero_boleto):
+        boleto_encontrado = None
+        for boleto in self.listaHistorial:
+            if boleto.numero_boleto == numero_boleto:
+                boleto_encontrado = boleto
+                break
+        
+        if boleto_encontrado:
+            boleto_encontrado.cancelado = True
+            print("\n\t¡El boleto ha sido cancelado exitosamente!")
+        else:
+            print("\n\tNo se encontró ningún boleto con el número proporcionado.")
+        
+        self.menuAdmi()

@@ -233,4 +233,12 @@ class EnlazadaSimple:
                     print("\tPeliculas:")
                     temp.dato.pelicula.verSoloPeliculas()  
                 temp = temp.siguiente
+                
+    def buscarPorSala(self, sala):
+        temp = self.primero
+        while temp:
+            if temp.dato.num == sala:
+                return temp.dato  # Devuelve el nodo si se encuentra la categoria
+            temp = temp.siguiente
+        return None  # Devuelve None si no se encuentra la categoria
 

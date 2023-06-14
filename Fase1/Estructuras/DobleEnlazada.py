@@ -125,6 +125,6 @@ class ListaDobleEnlazada:
         temp = self.primero
         while temp:
             if temp.dato.nombre == cine:
-                return temp.dato  # Devuelve el nodo si se encuentra el correo
+                return temp.dato  # Devuelve el nodo si se encuentra el cine
             temp = temp.siguiente
         return None  # Devuelve None si no se encuentra el correo
