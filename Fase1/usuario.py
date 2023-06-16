@@ -8,3 +8,4 @@ class Usuario():
         self.contrasena = contrasena
         self.peliculas_Favoritas = []
         self.historial_Boletos = []
+        

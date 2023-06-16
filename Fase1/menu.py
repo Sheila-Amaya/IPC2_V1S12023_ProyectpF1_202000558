@@ -8,6 +8,8 @@ from Estructuras.DobleEnlazada import *
 from cine import *
 from sala import *
 from boleto import *
+import xml.etree.ElementTree as ET
+import os
 
 lector = Lectura() #variable global
 class Menu:
@@ -23,7 +25,8 @@ class Menu:
     
     def __init__(self):
         self.console = Console()
-
+        self.nombre_usuario = None
+        self.contrasena = None
         self.admiPorDefecto() #para que se inicialice al ejecutar el programa
     
     def admiPorDefecto(self):
@@ -125,17 +128,20 @@ class Menu:
         else:
             print("\tNo se encontraron datos disponibles.\n")
 
-    def sesionCliente(self): #CLIENTE
-        nombre_usuario = self.console.input("\tIngresa tu nombre de usuario: ")
-        contrasena = self.console.input("\tIngresa tu contraseña: ")
+    def sesionCliente(self):
+        self.listaFavoritos = []
+        self.listaAsientos = []
+        self.listaHistorial = []
+
+        self.nombre_usuario = self.console.input("\tIngresa tu nombre de usuario: ")
+        self.contrasena = self.console.input("\tIngresa tu contraseña: ")
 
         temp = self.listaUsuario.primero
         while temp:
-            if temp.dato.rol == "cliente" and temp.dato.nombre == nombre_usuario and temp.dato.contrasena == contrasena:
+            if temp.dato.rol == "cliente" and temp.dato.nombre == self.nombre_usuario and temp.dato.contrasena == self.contrasena:
                 self.console.print("\n\tIngreso exitoso como cliente.\n", style="green")
-                self.menuCliente()  # Método para iniciar sesión como administrador
-                print()
-                return
+
+            self.menuCliente()
             temp = temp.siguiente
 
         self.console.print("\tCredenciales incorrectas. Vuelve a intentarlo.\n", style="bold red")
@@ -224,19 +230,27 @@ class Menu:
 
             if opcion == "1": #GESTION USUARIOS
                 self.console.print("\tHas seleccionado la opción 1.\n", style="green")
+                print()
                 self.gestionUsuarios()
-                
+                break
+            
             elif opcion == "2":#GESTION DE CATEGORIAS Y PELICULAS
                 self.console.print("\tHas seleccionado la opción 2.\n", style="green")
+                print()
                 self.gestionarCategorias()
+                break
 
             elif opcion == "3": #GESTIONAR SALAS
                 self.console.print("\tHas seleccionado la opción 3.\n", style="green")
+                print()
                 self.gestionarSalas()
+                break
                 
             elif opcion == "4": #GESTIONAR BOLETOS
                 self.console.print("\tHas seleccionado la opción 4.\n", style="green")
+                print()
                 self.gestionarBoletos()
+                break
 
             elif opcion == "5": #SALIR PARA EL MENU DEL ADMINISTRADOR
                 self.console.print("\tVolviendo al menú principal...", style="bold yellow")
@@ -245,7 +259,9 @@ class Menu:
 
             else:
                 self.console.print("\tOpción inválida. Por favor, selecciona una opción válida.\n", style="bold red")
+                print()
                 self.menuAdmi()
+                break
 
     def registrarUsuario(self): #Clientes unicamente
         self.console.print("[cyan]\n\tIngrese los datos para el usuario nuevo: \n[/cyan]")
@@ -275,7 +291,8 @@ class Menu:
                     self.console.print("\t[cyan]3. Modificar usuario[/cyan]")
                     self.console.print("\t[cyan]4. Eliminar usuario[/cyan]")
                     self.console.print("\t[cyan]5. Mostrar usuarios[/cyan]")
-                    self.console.print("\t[red]6. Volver al menú principal[/red]")
+                    self.console.print("\t[cyan]6. Generar xml[/cyan]")
+                    self.console.print("\t[red]7. Volver al menú principal[/red]")
                         
                     subopcion = self.console.input("\n\tSeleccione una opción: ")
 
@@ -298,8 +315,15 @@ class Menu:
                     elif subopcion == "5":
                         self.console.print("\tHas seleccionado Mostrar usuario.\n", style="green")
                         self.mostrarUsuario()
+                        
+                    elif subopcion == "6": #GENERAR XML SALIDA
+                        self.console.print("\tHas seleccionado la opción Generar xml\n", style="green")
+                        print()
+                        self.xml_Usuarios()
+                        self.gestionUsuarios()
+                        break
                     
-                    elif subopcion == "6":
+                    elif subopcion == "7":
                         self.console.print("\tVolviendo al menú principal...", style="bold yellow")
                         print()
                         self.menuAdmi()
@@ -375,7 +399,8 @@ class Menu:
                     self.console.print("\t[cyan]3. Modificar cine[/cyan]")
                     self.console.print("\t[cyan]4. Eliminar cine[/cyan]")
                     self.console.print("\t[cyan]5. Mostrar cines[/cyan]")
-                    self.console.print("\t[red]6. Volver al menú principal[/red]")
+                    self.console.print("\t[cyan]6. Generar xml[/cyan]")
+                    self.console.print("\t[red]7. Volver al menú principal[/red]")
                         
                     subopcion = self.console.input("\n\tSeleccione una opción: ")
 
@@ -398,8 +423,15 @@ class Menu:
                     elif subopcion == "5":
                         self.console.print("\tHas seleccionado Mostrar cine.\n", style="green")
                         self.mostrarSala()
+                        
+                    elif subopcion == "6": #GENERAR XML SALIDA
+                        self.console.print("\tHas seleccionado la opción Generar xml\n", style="green")
+                        print()
+                        self.xml_Salas()
+                        self.gestionarSalas()
+                        break
 
-                    elif subopcion == "6":
+                    elif subopcion == "7":
                         self.console.print("\tVolviendo al menú principal...", style="bold yellow")
                         print()
                         self.menuAdmi()
@@ -500,7 +532,8 @@ class Menu:
                     self.console.print("\t[cyan]3. Modificar pelicula[/cyan]")
                     self.console.print("\t[cyan]4. Eliminar pelicula[/cyan]")
                     self.console.print("\t[cyan]5. Mostrar peliculas[/cyan]")
-                    self.console.print("\t[red]6. Volver al menú principal[/red]")
+                    self.console.print("\t[cyan]6. Generar xml[/cyan]")
+                    self.console.print("\t[red]7. Volver al menú principal[/red]")
                         
                     subopcion = self.console.input("\n\tSeleccione una opción: ")
 
@@ -524,7 +557,14 @@ class Menu:
                         self.console.print("\tHas seleccionado Mostrar peliculas.\n", style="green")
                         self.mostrarCategoria()
 
-                    elif subopcion == "6":
+                    elif subopcion == "6": #GENERAR XML SALIDA
+                        self.console.print("\tHas seleccionado la opción Generar xml\n", style="green")
+                        print()
+                        self.xml_Categorias()
+                        self.gestionarCategorias()
+                        break
+
+                    elif subopcion == "7":
                         self.console.print("\tVolviendo al menú principal...\n", style="bold yellow")
                         self.menuAdmi()
 
@@ -769,22 +809,27 @@ class Menu:
                                 num_boletos = int(input("\n\tIngrese la cantidad de boletos a comprar: "))
                                 totalCompra = pelicula_encontrada.precio * num_boletos
                                 self.boletos += 1  # Incrementar el número de boleto
-                                self.generarFactura(categoria,cine_actual.nombre, titulo, num_boletos, self.boletos, totalCompra, numero_asiento)  # Generar factura con los detalles de la compra
-
+                                self.generarFactura(categoria,cine_actual.nombre, titulo, num_boletos,sala, self.boletos, totalCompra, numero_asiento)  # Generar factura con los detalles de la compra
                             else:
                                 print("\n\tNo se encontró la película especificada")
+                                self.comprarBoletos()
                         else:
                             print("\n\tNo se encontró la categoría especificada")
+                            self.comprarBoletos()
                     else:
                         print("\n\tEl asiento ya está ocupado por otro usuario")
+                        self.comprarBoletos()
                 else:
                     print("\n\tEl número de asiento ingresado no es válido")
+                    self.comprarBoletos()
             else:
                 print("\n\tNo se encontró la sala especificada")
+                self.comprarBoletos()
         else:
             print("\n\tNo se encontró el cine especificado")
+            self.comprarBoletos()
 
-    def generarFactura(self, categoria, cine, pelicula, num_boletos, boletos, total, numero_asiento):
+    def generarFactura(self, categoria, cine, pelicula, num_boletos,sala, boletos, total, numero_asiento):
         nombre = input("\tIngrese el nombre para la factura: ")
         if nombre == "C/F":
             print("\n\n\t======================== FACTURA =======================")
@@ -800,6 +845,7 @@ class Menu:
             hora = peli.hora
             print("\tFecha función: ", fecha)
             print("\tHora función: ", hora)
+            print("\tNúmero de sala: ", sala)
             print("\n\tNúmero de boletos: ", num_boletos)
             print("\tNúmero de asiento: ", numero_asiento)
             print("\tTotal a pagar: Q", total)
@@ -807,7 +853,7 @@ class Menu:
             print("\n\t===========================================================\n")
 
             # Agregar boleto al historial
-            boleto = Boleto(nombre, cine, "#USACIPC2_202000558_" + str(boletos), pelicula, fecha, hora, num_boletos, numero_asiento, total)
+            boleto = Boleto(nombre, cine, "#USACIPC2_202000558_" + str(boletos), pelicula, fecha, hora, num_boletos,sala, numero_asiento, total,False)
             self.listaHistorial.append(boleto)
             self.menuCliente()
         else:
@@ -820,6 +866,7 @@ class Menu:
             print("\tNombre:" + nombre)
             print("\tNIT:" + NIT)
             print("\tDirección:" + direccion)
+            print("\tNúmero de sala: ", sala)
             print("\tPelícula: ", pelicula)
 
             categoria_actual = self.listaCategorias.buscarPorCategoria(categoria)
@@ -827,7 +874,7 @@ class Menu:
 
             fecha = peli.fecha
             hora = peli.hora
-            print("\t\nFecha función: ", fecha)
+            print("\tFecha función: ", fecha)
             print("\tHora función: ", hora)
             print("\tNúmero de boletos: ", num_boletos)
             print("\tNúmero de asiento: ", numero_asiento)
@@ -836,7 +883,7 @@ class Menu:
             print("\n\t===========================================================\n")
 
             # Agregar boleto al historial
-            boleto = Boleto(nombre, cine, "#USACIPC2_202000558_" + str(boletos), pelicula, fecha, hora, num_boletos, numero_asiento, total)
+            boleto = Boleto(nombre, cine, "#USACIPC2_202000558_" + str(boletos), pelicula, fecha, hora, num_boletos,sala, numero_asiento, total,False)
             self.listaHistorial.append(boleto)
             self.menuCliente()
 
@@ -846,28 +893,36 @@ class Menu:
         else:
             print("\n\n\t==================== HISTORIAL DE BOLETOS ====================")
             for boleto in self.listaHistorial:
-                print("\t\nNombre:", boleto.nombre)
+                print("\n\tNombre:", boleto.nombre)
                 print("\tCine:", boleto.cine)
                 print("\tNúmero de boleto:", boleto.numero_boleto)
+                print("\tNúmero de sala: ", boleto.sala_encontrada)
                 print("\tPelícula:", boleto.pelicula)
                 print("\tFecha función:", boleto.fecha_funcion)
                 print("\tHora función:", boleto.hora_funcion)
                 print("\tNúmero de boletos:", boleto.num_boletos)
                 print("\tNúmero de asiento:", boleto.numero_asiento)
-                print("\tMonto pagado: Q", boleto.monto_pagado)
-                estado = "Cancelado" if boleto.cancelado else "Activo"
-                print("\tEstado:", estado)
+                print("\tMonto pagado: Q", boleto.monto_pagado) 
+                estado = "Cancelado" 
+                if boleto.cancelado:
+                    print("\tEstado:", estado)
                 print("\n\t==============================================================\n")
-        self.menuCliente()
-        self.menuCliente()
         
+        #Verifica si se estan agregando la lista de peliculas al usuario y historial de boletos
+        temp = self.listaUsuario.primero
+        while temp:
+            if temp.dato.nombre == self.nombre_usuario and temp.dato.contrasena == self.contrasena:
+                self.agregarHistorialFavoritos(self.nombre_usuario , self.contrasena)
+                #self.listaUsuario.mostrarUsuario()
+            temp = temp.siguiente
+        self.menuCliente()
+
     def cancelarBoleto(self, numero_boleto):
         boleto_encontrado = None
         for boleto in self.listaHistorial:
             if boleto.numero_boleto == numero_boleto:
                 boleto_encontrado = boleto
                 break
-        
         if boleto_encontrado:
             boleto_encontrado.cancelado = True
             print("\n\t¡El boleto ha sido cancelado exitosamente!")
@@ -875,3 +930,237 @@ class Menu:
             print("\n\tNo se encontró ningún boleto con el número proporcionado.")
         
         self.menuAdmi()
+
+    def agregarHistorialFavoritos(self, nombre_usuario, contrasena):
+        # Buscar el nodo del usuario que inició sesión
+        temp = self.listaUsuario.primero
+        while temp:
+            if  temp.dato.nombre == nombre_usuario and temp.dato.contrasena == contrasena:
+                # Añadir el historial de boletos y las películas favoritas al nodo del usuario
+                temp.dato.historial_Boletos = self.listaHistorial
+                temp.dato.peliculas_Favoritas = self.listaFavoritos
+                #self.console.print("\n\tHistorial de boletos y películas favoritas añadidos al usuario.", style="green")
+                self.nombre_usuario = None
+                self.contrasena = None
+                return
+            temp = temp.siguiente
+
+        #self.console.print("\n\tUsuario no encontrado. No se pudo agregar el historial y las películas favoritas.", style="bold red")                                
+
+    def xml_Usuarios(self):
+        # Nombre de la carpeta para almacenar los archivos XML
+        carpeta = "archivos_salida"
+
+        # Crear la carpeta si no existe
+        if not os.path.exists(carpeta):
+            os.makedirs(carpeta)
+
+        # Crear el elemento raíz del XML
+        root = ET.Element("usuarios")
+
+        # Recorrer la lista de usuarios y crear elementos XML para cada usuario
+        temp = self.listaUsuario.primero
+        while temp is not None:
+            # Crea el elemento de usuario
+            usuario = ET.SubElement(root, "usuario")
+
+            # Agregar elementos dentro del usuario
+            rol = ET.SubElement(usuario, "rol")
+            rol.text = temp.dato.rol
+
+            nombre = ET.SubElement(usuario, "nombre")
+            nombre.text = temp.dato.nombre
+
+            apellido = ET.SubElement(usuario, "apellido")
+            apellido.text = temp.dato.apellido
+
+            telefono = ET.SubElement(usuario, "telefono")
+            telefono.text = temp.dato.telefono
+
+            correo = ET.SubElement(usuario, "correo")
+            correo.text = temp.dato.correo
+
+            contrasena = ET.SubElement(usuario, "contrasena")
+            contrasena.text = temp.dato.contrasena
+
+            # Crea el elemento de películas favoritas y agregar elementos de películas
+            peliculas_favoritas = ET.SubElement(usuario, "peliculas_favoritas")
+            for pelicula in temp.dato.peliculas_Favoritas:
+                pelicula_element = ET.SubElement(peliculas_favoritas, "pelicula")
+                pelicula_element.text = pelicula
+
+            # Crear elemento de historial de boletos y agregar elementos de boletos
+            historial_boletos = ET.SubElement(usuario, "historial_boletos")
+            for boleto in temp.dato.historial_Boletos:
+                boleto_element = ET.SubElement(historial_boletos, "boleto")
+
+                nombre_boleto = ET.SubElement(boleto_element, "nombre")
+                nombre_boleto.text = boleto.nombre
+
+                cine = ET.SubElement(boleto_element, "cine")
+                cine.text = boleto.cine
+
+                numero_boleto = ET.SubElement(boleto_element, "numero_boleto")
+                numero_boleto.text = boleto.numero_boleto
+
+                pelicula = ET.SubElement(boleto_element, "pelicula")
+                pelicula.text = boleto.pelicula
+
+                fecha_funcion = ET.SubElement(boleto_element, "fecha_funcion")
+                fecha_funcion.text = boleto.fecha_funcion
+
+                hora_funcion = ET.SubElement(boleto_element, "hora_funcion")
+                hora_funcion.text = boleto.hora_funcion
+
+                num_boletos = ET.SubElement(boleto_element, "num_boletos")
+                num_boletos.text = str(boleto.num_boletos)
+
+                sala_encontrada = ET.SubElement(boleto_element, "sala_encontrada")
+                sala_encontrada.text = boleto.sala_encontrada
+
+                numero_asiento = ET.SubElement(boleto_element, "numero_asiento")
+                numero_asiento.text = str(boleto.numero_asiento)
+
+                monto_pagado = ET.SubElement(boleto_element, "monto_pagado")
+                monto_pagado.text = str(boleto.monto_pagado)
+
+                cancelado = ET.SubElement(boleto_element, "estado_boleto")
+                estado = "Cancelado" if boleto.cancelado else "Activo"
+                cancelado.text = estado
+
+            temp = temp.siguiente
+
+        # Combinar la ruta de la carpeta con el nombre del archivo XML
+        ruta_archivo = os.path.join(carpeta, "usuarios.xml")
+
+        # Convertir el árbol XML en una cadena con formato
+        xml_string = ET.tostring(root, encoding="utf-8", xml_declaration=True).decode("utf-8")
+
+        # Escribir la cadena con formato en el archivo
+        with open(ruta_archivo, "w") as file:
+            file.write(xml_string)
+
+    def xml_Categorias(self):
+        # Nombre de la carpeta para almacenar los archivos XML
+        carpeta = "archivos_salida"
+
+        # Crear la carpeta si no existe
+        if not os.path.exists(carpeta):
+            os.makedirs(carpeta)
+
+        # Crear el elemento raíz del XML
+        root = ET.Element("categorias")
+
+        temp = self.listaCategorias.primero
+        while temp is not None:
+            # Crea el elemento categoria
+            categoria = ET.Element("categoria")
+
+            # Crea el elemento nombre_categoria y agrega el nombre
+            nombre_categoria = ET.SubElement(categoria, "nombre")
+            nombre_categoria.text = temp.dato.nombre
+
+            # Crea el elemento de peliculas
+            peliculas = ET.SubElement(categoria, "peliculas")
+
+            # Buscar la categoría en la lista de categorías por nombre
+            categoria_buscada = self.listaCategorias.buscarPorCategoria(temp.dato.nombre)
+            if categoria_buscada is not None:
+                pelicula_actual = categoria_buscada.pelicula.primero
+                while pelicula_actual is not None:
+                    # Crear el elemento pelicula
+                    pelicula_element = ET.SubElement(peliculas, "pelicula")
+
+                    # Crear las etiquetas para los atributos de la película y asignar sus valores
+                    titulo = ET.SubElement(pelicula_element, "titulo")
+                    titulo.text = pelicula_actual.dato.titulo
+
+                    director = ET.SubElement(pelicula_element, "director")
+                    director.text = pelicula_actual.dato.director
+
+                    anio = ET.SubElement(pelicula_element, "anio")
+                    anio.text = str(pelicula_actual.dato.anio)
+
+                    fecha = ET.SubElement(pelicula_element, "fecha")
+                    fecha.text = pelicula_actual.dato.fecha
+
+                    hora = ET.SubElement(pelicula_element, "hora")
+                    hora.text = pelicula_actual.dato.hora
+
+                    precio = ET.SubElement(pelicula_element, "precio")
+                    precio.text = str(pelicula_actual.dato.precio)
+
+                    pelicula_actual = pelicula_actual.siguiente
+                    if pelicula_actual == categoria_buscada.pelicula.primero:
+                        break
+
+            # Agregar el elemento categoria al elemento raíz
+            root.append(categoria)
+
+            temp = temp.siguiente
+            if temp == self.listaCategorias.primero:
+                break
+
+        # Combinar la ruta de la carpeta con el nombre del archivo XML
+        ruta_archivo = os.path.join(carpeta, "categorias.xml")
+
+        # Convertir el árbol XML en una cadena con formato
+        xml_string = ET.tostring(root, encoding="utf-8", xml_declaration=True).decode("utf-8")
+
+        # Escribir la cadena con formato en el archivo
+        with open(ruta_archivo, "w") as file:
+            file.write(xml_string)
+
+    def xml_Salas(self):
+        # Nombre de la carpeta para almacenar los archivos XML
+        carpeta = "archivos_salida"
+
+        # Crear la carpeta si no existe
+        if not os.path.exists(carpeta):
+            os.makedirs(carpeta)
+
+        # Crear el elemento raíz del XML
+        root = ET.Element("cines")
+
+        temp = self.listaCine.primero
+        while temp is not None:
+            # Crea el elemento cine
+            cine = ET.Element("cine")
+
+            # Crea el elemento nombre_cine y agrega el nombre
+            nombre_cine = ET.SubElement(cine, "nombre")
+            nombre_cine.text = temp.dato.nombre
+
+            # Crea el elemento de salas
+            salas = ET.SubElement(cine, "salas")
+
+            # Recorrer la lista de salas del cine actual
+            temp.dato.sala.recorrerSalas()
+            sala_actual = temp.dato.sala.primero
+            while sala_actual is not None:
+                # Crear el elemento sala
+                sala_element = ET.SubElement(salas, "sala")
+
+                # Crear las etiquetas para los atributos de la sala y asignar sus valores
+                numero = ET.SubElement(sala_element, "numero")
+                numero.text = sala_actual.dato.num
+
+                asientos = ET.SubElement(sala_element, "asientos")
+                asientos.text = sala_actual.dato.asientos
+
+                sala_actual = sala_actual.siguiente
+
+            # Agregar el elemento cine al elemento raíz
+            root.append(cine)
+
+            temp = temp.siguiente
+
+        # Combinar la ruta de la carpeta con el nombre del archivo XML
+        ruta_archivo = os.path.join(carpeta, "salas.xml")
+
+        # Convertir el árbol XML en una cadena con formato
+        xml_string = ET.tostring(root, encoding="utf-8", xml_declaration=True).decode("utf-8")
+
+        # Escribir la cadena con formato en el archivo
+        with open(ruta_archivo, "w") as file:
+            file.write(xml_string)

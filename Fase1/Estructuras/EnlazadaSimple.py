@@ -46,6 +46,18 @@ class EnlazadaSimple:
         #console.print("[/red]El correo {} no ha sido encontrado.[/red]".format(correo))
         return None  # Devuelve None si no se encuentra el correo
     
+    def buscarPorNombreUsuario(self, nombre,contrasenia):
+        #console = Console()
+        temp = self.primero
+        while temp:
+            if temp.dato.nombre == nombre and temp.dato.contrasenia == contrasenia:
+                #console.print("[/cyan]El correo {} ha sido encontrado.[/cyan]".format(correo))
+                return temp.dato  # Devuelve el nodo si se encuentra el correo
+            temp = temp.siguiente
+        #console.print("[/red]El correo {} no ha sido encontrado.[/red]".format(correo))
+        return None  # Devuelve None si no se encuentra el correo
+    
+    
     def buscarPorRol(self, rol):
         #console = Console()
         temp = self.primero
@@ -59,6 +71,8 @@ class EnlazadaSimple:
     def modificarPorCorreo(self, correo):
         console = Console()
         temp = self.primero
+
+        # Recorrer la lista mientras haya nodos disponibles
         while temp:
             if temp.dato.correo == correo:
                 print()
@@ -67,17 +81,21 @@ class EnlazadaSimple:
                 nuevoTelefono = console.input("[yellow]\tIngrese el nuevo teléfono: [/yellow]")
                 nuevoCorreo = console.input("[yellow]\tIngrese el nuevo correo: [/yellow]")
                 nuevaContrasena = console.input("[yellow]\tIngrese la nueva contraseña: [/yellow]")
-                
+
+                # Modificar los datos del usuario
                 temp.dato.nombre = nuevoNombre
                 temp.dato.apellido = nuevoApellido
                 temp.dato.telefono = nuevoTelefono
                 temp.dato.correo = nuevoCorreo
                 temp.dato.contrasena = nuevaContrasena
-                
+
                 console.print("[cyan]\tLos datos del correo {} han sido modificados.\n[/cyan]".format(correo))
                 return True
+
+            # Avanzar al siguiente nodo
             temp = temp.siguiente
-        
+
+        # Si el correo no se encuentra en la lista
         console.print("[/red]El correo {} no ha sido encontrado.[/red]".format(correo))
         return False
 
@@ -242,3 +260,44 @@ class EnlazadaSimple:
             temp = temp.siguiente
         return None  # Devuelve None si no se encuentra la categoria
 
+    def mostrarUsuario(self):
+        temp = self.primero
+        while temp is not None:
+            print("\n\tRol: " + temp.dato.rol)
+            print("\tNombre: " + temp.dato.nombre)
+            print("\tApellido: " + temp.dato.apellido)
+            print("\tCorreo: " + temp.dato.correo)
+            print("\tContraseña: " + temp.dato.contrasena + "\n")
+            
+            # Verificar si la lista de películas favoritas no está vacía
+            if temp.dato.peliculas_Favoritas:
+                print("\tPeliculas Favoritas:")
+                for pelicula in temp.dato.peliculas_Favoritas:
+                    print("\t- " + pelicula)
+            else:
+                pass
+                #print("\tPeliculas Favoritas: No hay películas favoritas registradas.")
+            
+            # Verificar si la lista de historial de boletos no está vacía
+            if temp.dato.historial_Boletos:
+                print("\n\tHistorial de Boletos:")
+                for boleto in temp.dato.historial_Boletos:
+                    print("\t- Nombre:: " + boleto.nombre)
+                    print("\t- Cine: " + boleto.cine)
+                    print("\t- Número de boleto: " + boleto.numero_boleto)
+                    print("\t- Número de sala: " + boleto.sala_encontrada)
+                    print("\t- Película: " + boleto.pelicula)
+                    print("\t- Fecha función: " + boleto.fecha_funcion)
+                    print("\t- Hora función: " + boleto.hora_funcion)
+                    print("\t- Número de boletos: " + boleto.num_boletos)
+                    print("\t- Número de asiento: " + boleto.numero_asiento)
+                    print("\t- Monto pagado: " + boleto.monto_pagado)
+                    estado = "Cancelado" 
+                    estado = "Cancelado" if boleto.cancelado else "Activo"
+                    print("\tEstado: " + estado)
+
+            else:
+                pass
+                #print("\tHistorial de Boletos: No hay boletos registrados en el historial.")
+            
+            temp = temp.siguiente
